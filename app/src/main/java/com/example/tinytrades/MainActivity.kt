@@ -1,3 +1,4 @@
+//Tiny Trades 
 package com.example.tinytrades
 
 import android.os.Bundle

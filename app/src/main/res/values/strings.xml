@@ -8,4 +8,10 @@
     <string name="sell">sell</string>
     <string name="your_orders">your orders</string>
     <string name="profile">profile</string>
+    <string name="login">LOGIN</string>
+    <string name="backbtn">back button</string>
+    <string name="username">Enter your username</string>
+    <string name="password">Enter your password</string>
+    <string name="loginbtn">LOGIN</string>
+    <string name="forgot_password">Forgot password?</string>
 </resources>

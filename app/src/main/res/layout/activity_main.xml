@@ -7,13 +7,130 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello! Welcom to Tiny Trades"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <LinearLayout
+        android:id="@+id/appinfo"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:background="@color/white"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="5dp"
+            android:contentDescription="@string/logo"
+            android:scaleType="fitCenter"
+            android:src="@drawable/logo" />
+
+        <TextView
+            android:id="@+id/appname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="115dp"
+            android:text="@string/appname"
+            android:textColor="@color/orange"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/add_to_cart"
+            android:layout_gravity="center"
+            android:layout_marginStart="115dp"
+            android:backgroundTint="@color/white"
+            android:contentDescription="@string/add_to_cart"
+            android:src="@drawable/baseline_add_shopping_cart_24" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent" >
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent" >
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/home"
+            android:layout_gravity="center"
+            android:layout_marginStart="4dp"
+            android:src="@drawable/baseline_home_filled_24"
+            android:backgroundTint="@color/white"
+            android:contentDescription="@string/home" />
+
+        <View
+            android:layout_width="20dp"
+            android:layout_height="50dp" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/explore"
+            android:layout_gravity="center"
+            android:src="@drawable/baseline_explore_24"
+            android:backgroundTint="@color/white"
+            android:contentDescription="@string/explore" />
+
+        <View
+            android:layout_width="20dp"
+            android:layout_height="50dp" />
+
+        <ImageButton
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:id="@+id/sell"
+            android:layout_gravity="center"
+            android:src="@drawable/sell"
+            android:backgroundTint="@color/white"
+            android:contentDescription="@string/sell" />
+
+        <View
+            android:layout_width="20dp"
+            android:layout_height="50dp"/>
+
+        <ImageButton
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/inbox"
+            android:layout_gravity="center"
+            android:src="@drawable/you"
+            android:backgroundTint="@color/white"
+            android:contentDescription="@string/your_orders"/>
+
+        <View
+            android:layout_width="20dp"
+            android:layout_height="50dp" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/profile"
+            android:layout_gravity="center"
+            android:src="@drawable/baseline_account_circle_24"
+            android:backgroundTint="@color/white"
+            android:contentDescription="@string/profile"/>
+
+    </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

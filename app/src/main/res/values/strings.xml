@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Tiny Trades</string>
+    <string name="logo">Tiny Trades</string>
+    <string name="appname">𝑻𝒊𝒏𝒚 𝑻𝒓𝒂𝒅𝒆𝒔</string>
+    <string name="add_to_cart">Add to cart</string>
+    <string name="home">Home</string>
+    <string name="explore">Explore</string>
+    <string name="sell">sell</string>
+    <string name="your_orders">your orders</string>
+    <string name="profile">profile</string>
 </resources>

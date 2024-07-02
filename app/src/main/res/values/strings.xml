@@ -1,15 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Tiny Trades</string>
     <string name="logo">Tiny Trades</string>
-    <string name="appname">𝑻𝒊𝒏𝒚 𝑻𝒓𝒂𝒅𝒆𝒔</string>
+    <string name="appname">Tiny Trades</string>
     <string name="add_to_cart">Add to cart</string>
     <string name="home">Home</string>
     <string name="explore">Explore</string>
-    <string name="sell">sell</string>
-    <string name="your_orders">your orders</string>
-    <string name="profile">profile</string>
-    <string name="login">LOGIN</string>
-    <string name="backbtn">back button</string>
+    <string name="sell">Sell</string>
+    <string name="your_orders">Your orders</string>
+    <string name="profile">Profile</string>
+    <string name="login">Log in</string>
+    <string name="backbtn">Back button</string>
     <string name="username">Enter your username</string>
     <string name="password">Enter your password</string>
     <string name="loginbtn">LOGIN</string>

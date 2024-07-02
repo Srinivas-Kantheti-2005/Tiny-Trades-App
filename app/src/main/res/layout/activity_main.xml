@@ -39,9 +39,9 @@
             android:textStyle="bold" />
 
         <ImageButton
+            android:id="@+id/add_to_cart"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:id="@+id/add_to_cart"
             android:layout_gravity="center"
             android:layout_marginStart="115dp"
             android:backgroundTint="@color/white"
@@ -56,9 +56,7 @@
         android:layout_marginBottom="10dp"
         android:orientation="horizontal"
         android:background="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent" >
-
-    </LinearLayout>
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -66,12 +64,12 @@
         android:layout_marginBottom="10dp"
         android:orientation="horizontal"
         android:background="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent" >
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <ImageButton
+            android:id="@+id/home"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/home"
             android:layout_gravity="center"
             android:layout_marginStart="4dp"
             android:src="@drawable/baseline_home_filled_24"
@@ -83,9 +81,9 @@
             android:layout_height="50dp" />
 
         <ImageButton
+            android:id="@+id/explore"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/explore"
             android:layout_gravity="center"
             android:src="@drawable/baseline_explore_24"
             android:backgroundTint="@color/white"
@@ -96,9 +94,9 @@
             android:layout_height="50dp" />
 
         <ImageButton
+            android:id="@+id/sell"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:id="@+id/sell"
             android:layout_gravity="center"
             android:src="@drawable/sell"
             android:backgroundTint="@color/white"
@@ -106,31 +104,30 @@
 
         <View
             android:layout_width="20dp"
-            android:layout_height="50dp"/>
+            android:layout_height="50dp" />
 
         <ImageButton
+            android:id="@+id/inbox"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:id="@+id/inbox"
             android:layout_gravity="center"
             android:src="@drawable/you"
             android:backgroundTint="@color/white"
-            android:contentDescription="@string/your_orders"/>
+            android:contentDescription="@string/your_orders" />
 
         <View
             android:layout_width="20dp"
             android:layout_height="50dp" />
 
         <ImageButton
+            android:id="@+id/profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/profile"
             android:layout_gravity="center"
             android:src="@drawable/baseline_account_circle_24"
             android:backgroundTint="@color/white"
-            android:contentDescription="@string/profile"/>
+            android:contentDescription="@string/profile" />
 
     </LinearLayout>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

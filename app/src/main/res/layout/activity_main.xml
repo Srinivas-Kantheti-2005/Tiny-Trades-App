@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginStart="115dp"
+            android:layout_marginStart="100dp"
             android:text="@string/appname"
             android:textColor="@color/orange"
             android:textSize="20sp"
@@ -44,10 +44,14 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="center"
-            android:layout_marginStart="115dp"
+            android:layout_marginStart="90dp"
             android:backgroundTint="@color/white"
             android:contentDescription="@string/add_to_cart"
             android:src="@drawable/baseline_add_shopping_cart_24" />
+
+        <View
+            android:layout_width="40dp"
+            android:layout_height="60dp"/>
 
     </LinearLayout>
 
@@ -75,7 +79,7 @@
                 android:contentDescription="@string/home" />
 
             <View
-                android:layout_width="20dp"
+                android:layout_width="10dp"
                 android:layout_height="50dp" />
 
             <ImageButton
@@ -88,7 +92,7 @@
                 android:contentDescription="@string/explore" />
 
             <View
-                android:layout_width="20dp"
+                android:layout_width="50dp"
                 android:layout_height="50dp" />
 
             <View
@@ -98,7 +102,7 @@
                 android:visibility="invisible" />
 
             <View
-                android:layout_width="30dp"
+                android:layout_width="40dp"
                 android:layout_height="50dp" />
 
             <ImageButton
@@ -111,7 +115,7 @@
                 android:contentDescription="@string/your_orders" />
 
             <View
-                android:layout_width="20dp"
+                android:layout_width="10dp"
                 android:layout_height="50dp" />
 
             <ImageButton
@@ -122,6 +126,11 @@
                 android:src="@drawable/account_circle_black"
                 android:backgroundTint="@color/white"
                 android:contentDescription="@string/profile" />
+
+            <View
+                android:layout_width="10dp"
+                android:layout_height="50dp"/>
+
         </LinearLayout>
 
         <ImageButton

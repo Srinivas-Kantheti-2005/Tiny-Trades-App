@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Tiny Trades</string>
+    <string name="title_activity_userprofile">userprofile</string>
 </resources>

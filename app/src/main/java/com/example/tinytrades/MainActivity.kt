@@ -1,6 +1,7 @@
 package com.example.tinytrades
 
 import android.os.Bundle
+import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -12,10 +13,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var dataList: ArrayList<DataClass>
     private lateinit var adapter: AdapterClass
     private lateinit var searchView: SearchView
-
+    private lateinit var explorebtn: ImageButton
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        searchView = findViewById(R.id.searchView)
+        explorebtn = findViewById(R.id.explore)
 
         val imageList = arrayOf(
             R.drawable.facebook_mini,
@@ -51,8 +55,13 @@ class MainActivity : AppCompatActivity() {
         adapter = AdapterClass(dataList)
         recyclerView.adapter = adapter
 
-        searchView = findViewById(R.id.searchView)
+        searchView.queryHint = "Search Tiny Trades..."
         setupSearchView()
+
+        explorebtn.setOnClickListener {
+            searchView.requestFocus()
+            searchView.isIconified = false
+        }
     }
 
     private fun setupSearchView() {
@@ -62,7 +71,8 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                filterData(newText ?: "")
+                val queryText = newText ?: ""
+                filterData(queryText)
                 return true
             }
         })

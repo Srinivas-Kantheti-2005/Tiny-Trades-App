@@ -22,4 +22,8 @@
     <string name="image">Image</string>
     <string name="title">Title</string>
     <string name="price">price</string>
+    <string name="item_image">Item Image</string>
+    <string name="item_title">Item Title</string>
+    <string name="item_price">Item Price</string>
+    <string name="image_view">Detail View</string>
 </resources>

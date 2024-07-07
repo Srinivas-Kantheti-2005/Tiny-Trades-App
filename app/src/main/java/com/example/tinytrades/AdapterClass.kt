@@ -1,5 +1,6 @@
 package com.example.tinytrades
 
+import android.content.Intent
 import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
@@ -37,6 +38,15 @@ class AdapterClass(private var dataList: ArrayList<DataClass>) : RecyclerView.Ad
         val layoutParams = holder.cardView.layoutParams as ViewGroup.MarginLayoutParams
         layoutParams.height = dpToPx(getRandomHeight())
         holder.cardView.layoutParams = layoutParams
+        holder.itemView.setOnClickListener {
+            val context = holder.itemView.context
+            val intent = Intent(context, ItemDetailsActivity::class.java).apply {
+                putExtra("itemImage", currentItem.dataImage)
+                putExtra("itemTitle", currentItem.dataTitle)
+                putExtra("itemPrice", currentItem.dataPrice)
+            }
+            context.startActivity(intent)
+        }
     }
 
     fun updateList(filteredList: ArrayList<DataClass>) {

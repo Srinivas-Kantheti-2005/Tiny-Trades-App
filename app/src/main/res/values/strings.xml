@@ -26,4 +26,16 @@
     <string name="item_title">Item Title</string>
     <string name="item_price">Item Price</string>
     <string name="image_view">Detail View</string>
+    <string name="userprofile">Profile</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="mobile_number">Mobile number</string>
+    <string name="email_id">Email id</string>
+    <string name="address">Personal Address</string>
+    <string name="d_no">D. No.</string>
+    <string name="street">Street</string>
+    <string name="village">Village</string>
+    <string name="pin_code">Pin code</string>
+    <string name="mandal">Mandal</string>
+    <string name="district">District</string>
 </resources>

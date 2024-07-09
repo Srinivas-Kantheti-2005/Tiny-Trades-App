@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    tools:context=".ProfileActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:id="@+id/Profile"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginTop="0dp"
+        android:orientation="horizontal"
+        android:background="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:id="@+id/backbtn"
+            android:background="@color/white"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/baseline_arrow_back_24"
+            android:contentDescription="@string/backbtn" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/UserProfile"
+            android:text="@string/userprofile"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginTop="18dp"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/firstname"
+        android:layout_width="180dp"
+        android:layout_height="40dp"
+        android:hint="@string/first_name"
+        android:textSize="16sp"
+        android:textStyle="normal"
+        android:textColor="@color/black"
+        android:textColorHint="@color/hint"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="70dp"
+        android:layout_marginEnd="5dp"
+        android:padding="10dp"
+        android:background="@color/dim_background"
+        app:layout_constraintTop_toBottomOf="@id/Profile"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/lastname"
+        app:layout_constraintBottom_toTopOf="@id/mobileno"/>
+
+    <TextView
+        android:id="@+id/lastname"
+        android:layout_width="180dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="70dp"
+        android:layout_marginEnd="20dp"
+        android:background="@color/dim_background"
+        android:hint="@string/last_name"
+        android:textSize="16sp"
+        android:textStyle="normal"
+        android:padding="10dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/hint"
+        app:layout_constraintBottom_toTopOf="@id/mobileno"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/firstname"
+        app:layout_constraintTop_toBottomOf="@id/Profile"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/mobileno"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:background="@color/dim_background"
+        android:hint="@string/mobile_number"
+        android:textSize="16sp"
+        android:textStyle="normal"
+        android:padding="10dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/hint"
+        app:layout_constraintEnd_toEndOf="@id/lastname"
+        app:layout_constraintStart_toStartOf="@id/firstname"
+        app:layout_constraintTop_toBottomOf="@id/firstname" />
+
+    <TextView
+        android:id="@+id/emailid"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:background="@color/dim_background"
+        android:hint="@string/email_id"
+        android:textSize="16sp"
+        android:textStyle="normal"
+        android:padding="10dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/hint"
+        app:layout_constraintEnd_toEndOf="@id/lastname"
+        app:layout_constraintStart_toStartOf="@id/firstname"
+        app:layout_constraintTop_toBottomOf="@id/mobileno" />
+
+    <TextView
+        android:id="@+id/address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/address"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="50dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/emailid"/>
+
+    <TextView
+        android:id="@+id/dno"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:background="@color/dim_background"
+        android:hint="@string/d_no"
+        android:textSize="16sp"
+        android:textStyle="normal"
+        android:textColor="@color/black"
+        android:textColorHint="@color/hint"
+        android:padding="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginTop="60dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/address"
+        app:layout_constraintEnd_toStartOf="@id/street"/>
+
+    <TextView
+        android:id="@+id/street"
+        android:layout_width="265dp"
+        android:layout_height="40dp"
+        android:background="@color/dim_background"
+        android:hint="@string/street"
+        android:textSize="16sp"
+        android:textStyle="normal"
+        android:textColor="@color/black"
+        android:textColorHint="@color/hint"
+        android:padding="10dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="60dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/address"
+        app:layout_constraintStart_toEndOf="@id/dno"/>
+
+    <TextView
+        android:id="@+id/village"
+        android:layout_width="180dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="5dp"
+        android:background="@color/dim_background"
+        android:hint="@string/village"
+        android:padding="10dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/hint"
+        android:textSize="16sp"
+        android:textStyle="normal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dno"/>
+
+    <TextView
+        android:id="@+id/pincode"
+        android:layout_width="180dp"
+        android:layout_height="40dp"
+        android:background="@color/dim_background"
+        android:hint="@string/pin_code"
+        android:textSize="16sp"
+        android:textStyle="normal"
+        android:textColor="@color/black"
+        android:textColorHint="@color/hint"
+        android:padding="10dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/street"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/mandal"
+        android:layout_width="180dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="5dp"
+        android:background="@color/dim_background"
+        android:hint="@string/mandal"
+        android:padding="10dp"
+        android:textColor="@color/black"
+        android:textColorHint="@color/hint"
+        android:textSize="16sp"
+        android:textStyle="normal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/village" />
+
+    <TextView
+        android:id="@+id/district"
+        android:layout_width="180dp"
+        android:layout_height="40dp"
+        android:background="@color/dim_background"
+        android:hint="@string/district"
+        android:textSize="16sp"
+        android:textStyle="normal"
+        android:textColor="@color/black"
+        android:textColorHint="@color/hint"
+        android:padding="10dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/pincode"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/background"
+        android:id="@+id/frameLayout"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/linearLayout"
+            android:orientation="horizontal"
+            android:layout_marginTop="15dp"
+            android:background="@color/white">
+
+            <ImageButton
+                android:id="@+id/home"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="4dp"
+                android:src="@drawable/home_icon_black"
+                android:backgroundTint="@color/white"
+                android:contentDescription="@string/home" />
+
+            <View
+                android:layout_width="10dp"
+                android:layout_height="50dp" />
+
+            <ImageButton
+                android:id="@+id/explore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/explore_icon_black"
+                android:backgroundTint="@color/white"
+                android:contentDescription="@string/explore" />
+
+            <View
+                android:layout_width="50dp"
+                android:layout_height="50dp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:visibility="invisible" />
+
+            <View
+                android:layout_width="40dp"
+                android:layout_height="50dp" />
+
+            <ImageButton
+                android:id="@+id/inbox"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/notification_black"
+                android:backgroundTint="@color/white"
+                android:contentDescription="@string/your_orders" />
+
+            <View
+                android:layout_width="10dp"
+                android:layout_height="50dp" />
+
+            <ImageButton
+                android:id="@+id/profile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/account_circle_orange"
+                android:backgroundTint="@color/white"
+                android:contentDescription="@string/profile" />
+
+            <View
+                android:layout_width="10dp"
+                android:layout_height="50dp"/>
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/sell"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:src="@drawable/sell"
+            android:backgroundTint="@color/background"
+            android:contentDescription="@string/sell" />
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

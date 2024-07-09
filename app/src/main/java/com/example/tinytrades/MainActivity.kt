@@ -1,5 +1,6 @@
 package com.example.tinytrades
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
@@ -20,19 +21,25 @@ class MainActivity : AppCompatActivity() {
 
         searchView = findViewById(R.id.searchView)
         explorebtn = findViewById(R.id.explore)
+        val profilebtn = findViewById<ImageButton>(R.id.profile)
+
+        profilebtn.setOnClickListener {
+            val loginbtn = Intent(this, LoginPage::class.java)
+            startActivity(loginbtn)
+        }
 
         val imageList = arrayOf(
-            R.drawable.facebook_mini,
-            R.drawable.google_mini,
-            R.drawable.instagram_mini,
-            R.drawable.twitter_mini
+            R.drawable.a,
+            R.drawable.b,
+            R.drawable.c,
+            R.drawable.d
         )
 
         val titleList = arrayOf(
-            "Facebook",
-            "Google",
-            "Instagram",
-            "Twitter"
+            "a",
+            "b",
+            "c",
+            "d"
         )
 
         val priceList = arrayOf(

@@ -55,7 +55,7 @@ class AdapterClass(private var dataList: ArrayList<DataClass>) : RecyclerView.Ad
     }
 
     private fun getRandomHeight(): Int {
-        return (500 .. 550).random()
+        return (400 .. 450).random()
     }
 
     private fun dpToPx(dp: Int): Int {

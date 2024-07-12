@@ -1,4 +1,4 @@
-// AdapterClass.kt
+
 import android.content.Intent
 import android.content.res.Resources
 import android.view.LayoutInflater
@@ -38,7 +38,6 @@ class AdapterClass(private var dataList: ArrayList<DataClass>) : RecyclerView.Ad
         holder.rvSize.text = currentItem.dataSize
         holder.rvPrice.text = currentItem.dataPrice
 
-        // Adjusting heights of CardView (400dp to 600dp) without affecting ImageView
         val layoutParams = holder.cardView.layoutParams as ViewGroup.MarginLayoutParams
         layoutParams.height = dpToPx(getRandomHeight())
         holder.cardView.layoutParams = layoutParams
@@ -46,10 +45,7 @@ class AdapterClass(private var dataList: ArrayList<DataClass>) : RecyclerView.Ad
         holder.itemView.setOnClickListener {
             val context = holder.itemView.context
             val intent = Intent(context, ItemDetailsActivity::class.java).apply {
-                putExtra("itemImage", currentItem.dataImage)
-                putExtra("itemTitle", currentItem.dataTitle)
-                putExtra("itemSize", currentItem.dataSize)
-                putExtra("itemPrice", currentItem.dataPrice)
+                putExtra("item_position", position)
             }
             context.startActivity(intent)
         }
@@ -61,7 +57,7 @@ class AdapterClass(private var dataList: ArrayList<DataClass>) : RecyclerView.Ad
     }
 
     private fun getRandomHeight(): Int {
-        return (350 .. 400).random()
+        return (350..400).random()
     }
 
     private fun dpToPx(dp: Int): Int {

@@ -4,5 +4,6 @@ data class DataClass(
     var dataImage: Int,
     var dataTitle: String,
     var dataSize: String,
-    var dataPrice: String
+    var dataPrice: String,
+    var sellerName: String
 )

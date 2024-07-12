@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 class MainActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var dataList: ArrayList<DataClass>
     private lateinit var adapter: AdapterClass
     private lateinit var searchView: SearchView
     private lateinit var explorebtn: ImageButton
@@ -32,45 +31,9 @@ class MainActivity : AppCompatActivity() {
             startActivity(loginbtn)
         }
 
-        val imageList = arrayOf(
-            R.drawable.a,
-            R.drawable.b,
-            R.drawable.c,
-            R.drawable.d
-        )
-
-        val titleList = arrayOf(
-            "a",
-            "b",
-            "c",
-            "d"
-        )
-
-        val sizeList = arrayOf(
-            "S",
-            "M",
-            "L",
-            "XXL"
-        )
-
-        val priceList = arrayOf(
-            "150",
-            "200",
-            "300",
-            "100"
-        )
-
-        dataList = arrayListOf()
-        repeat(6) { // Repeat the list six times
-            for (i in imageList.indices) {
-                val dataClass = DataClass(imageList[i], titleList[i], sizeList[i], priceList[i])
-                dataList.add(dataClass)
-            }
-        }
-
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        adapter = AdapterClass(dataList)
+        adapter = AdapterClass(DataManager.itemsList)
         recyclerView.adapter = adapter
 
         searchView.queryHint = "Search Tiny Trades..."
@@ -97,7 +60,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun filterData(query: String) {
-        val filteredList = dataList.filter {
+        val filteredList = DataManager.itemsList.filter {
             it.dataTitle.contains(query, ignoreCase = true)
         }
         adapter.updateList(filteredList as ArrayList<DataClass>)
@@ -110,7 +73,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleIntent(intent: Intent) {
         val navigate_to = intent.getStringExtra("navigate_to")
-        if(navigate_to == "explore") {
+        if (navigate_to == "explore") {
             navigateToExplore()
         }
     }

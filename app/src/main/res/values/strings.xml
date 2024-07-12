@@ -45,4 +45,12 @@
     <string name="gender">Gender</string>
     <string name="seller_image">Seller Image</string>
     <string name="seller_name">Seller Name</string>
+    <string name="create_account">Create Account</string>
+    <string name="create_username">Create username</string>
+    <string name="create_password">Create password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="create">CREATE</string>
+    <string name="save">SAVE</string>
+    <string name="new_account">NEW ACCOUNT</string>
+    <string name="sellbtn">SELL</string>
 </resources>

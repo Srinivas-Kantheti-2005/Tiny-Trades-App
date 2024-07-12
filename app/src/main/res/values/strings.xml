@@ -21,7 +21,7 @@
     <string name="changebtn">CHANGE</string>
     <string name="image">Image</string>
     <string name="title">Title</string>
-    <string name="price">price</string>
+    <string name="price">Price</string>
     <string name="item_image">Item Image</string>
     <string name="item_title">Item Title</string>
     <string name="item_price">Item Price</string>
@@ -38,4 +38,11 @@
     <string name="pin_code">Pin code</string>
     <string name="mandal">Mandal</string>
     <string name="district">District</string>
+    <string name="add_cart">ADD CART</string>
+    <string name="buy_now">BUY NOW</string>
+    <string name="size">size</string>
+    <string name="item_size">Size</string>
+    <string name="gender">Gender</string>
+    <string name="seller_image">Seller Image</string>
+    <string name="seller_name">Seller Name</string>
 </resources>

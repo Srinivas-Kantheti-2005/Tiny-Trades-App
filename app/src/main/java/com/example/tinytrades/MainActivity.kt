@@ -1,12 +1,13 @@
 package com.example.tinytrades
 
+import AdapterClass
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import androidx.appcompat.widget.SearchView
 
 class MainActivity : AppCompatActivity() {
 
@@ -15,16 +16,19 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adapter: AdapterClass
     private lateinit var searchView: SearchView
     private lateinit var explorebtn: ImageButton
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        handleIntent(intent)
 
         searchView = findViewById(R.id.searchView)
         explorebtn = findViewById(R.id.explore)
         val profilebtn = findViewById<ImageButton>(R.id.profile)
 
         profilebtn.setOnClickListener {
-            val loginbtn = Intent(this, LoginPage::class.java)
+            val loginbtn = Intent(this, ProfileActivity::class.java)
             startActivity(loginbtn)
         }
 
@@ -42,6 +46,13 @@ class MainActivity : AppCompatActivity() {
             "d"
         )
 
+        val sizeList = arrayOf(
+            "S",
+            "M",
+            "L",
+            "XXL"
+        )
+
         val priceList = arrayOf(
             "150",
             "200",
@@ -52,7 +63,7 @@ class MainActivity : AppCompatActivity() {
         dataList = arrayListOf()
         repeat(6) { // Repeat the list six times
             for (i in imageList.indices) {
-                val dataClass = DataClass(imageList[i], titleList[i], priceList[i])
+                val dataClass = DataClass(imageList[i], titleList[i], sizeList[i], priceList[i])
                 dataList.add(dataClass)
             }
         }
@@ -90,5 +101,22 @@ class MainActivity : AppCompatActivity() {
             it.dataTitle.contains(query, ignoreCase = true)
         }
         adapter.updateList(filteredList as ArrayList<DataClass>)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        handleIntent(intent)
+    }
+
+    private fun handleIntent(intent: Intent) {
+        val navigate_to = intent.getStringExtra("navigate_to")
+        if(navigate_to == "explore") {
+            navigateToExplore()
+        }
+    }
+
+    private fun navigateToExplore() {
+        val explorebtn = findViewById<ImageButton>(R.id.explore)
+        explorebtn.performClick()
     }
 }

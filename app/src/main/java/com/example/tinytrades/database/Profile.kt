@@ -14,11 +14,13 @@ import androidx.room.PrimaryKey
         onDelete = ForeignKey.CASCADE
     )]
 )
-
-data class Profile (
+data class Profile(
     @PrimaryKey
-    @ColumnInfo(name = "EmailId")
+    @ColumnInfo(name = "emailid")
     val emailId: String,
+
+    @ColumnInfo(name = "username")
+    val username: String,
 
     @ColumnInfo(name = "Image")
     val image: Int,

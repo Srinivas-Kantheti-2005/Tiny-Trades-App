@@ -19,6 +19,9 @@ data class Profile(
     @ColumnInfo(name = "EmailId")
     val emailId: String,
 
+    @ColumnInfo(name = "Image")
+    val image: Int,
+
     @ColumnInfo(name = "First Name")
     val firstname: String,
 

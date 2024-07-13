@@ -16,7 +16,7 @@ class ProfileActivity : AppCompatActivity() {
         val backbtn = findViewById<ImageButton>(R.id.backbtn)
         val homebtn = findViewById<ImageButton>(R.id.home)
         val explorebtn = findViewById<ImageButton>(R.id.explore)
-        val createbtn = findViewById<Button>(R.id.create)
+        val loginbtn = findViewById<Button>(R.id.loginpbtn)
         val newaccountbtn = findViewById<Button>(R.id.newaccount)
 
         backbtn.setOnClickListener {
@@ -28,7 +28,7 @@ class ProfileActivity : AppCompatActivity() {
             startActivity(createaccount)
         }
 
-        createbtn.setOnClickListener {
+        loginbtn.setOnClickListener {
             val login = Intent(this, LoginPage::class.java)
             startActivity(login)
         }

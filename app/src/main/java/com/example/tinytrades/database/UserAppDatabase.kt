@@ -1,4 +1,4 @@
-package com.example.tinytrades.Database
+package com.example.tinytrades.database
 
 import android.content.Context
 import androidx.room.Database

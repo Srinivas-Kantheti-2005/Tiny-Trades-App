@@ -1,4 +1,4 @@
-package com.example.tinytrades.Database
+package com.example.tinytrades.database
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -14,7 +14,8 @@ import androidx.room.PrimaryKey
         onDelete = ForeignKey.CASCADE
     )]
 )
-data class Profile(
+
+data class Profile (
     @PrimaryKey
     @ColumnInfo(name = "EmailId")
     val emailId: String,

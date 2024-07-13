@@ -1,4 +1,4 @@
-package com.example.tinytrades.Database
+package com.example.tinytrades.database
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -11,10 +11,4 @@ interface UserDao {
 
     @Query("select * from User where Username = :username")
     suspend fun getUserByUsername(username: String): User?
-
-    @Insert
-    suspend fun insertProfile(profile: Profile)
-
-    @Query("select * from Profile where emailId = :emailId")
-    suspend fun getProfileByEmailId(emailId: String): Profile?
 }

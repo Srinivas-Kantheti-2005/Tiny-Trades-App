@@ -290,8 +290,8 @@
     <Button
         android:layout_width="150dp"
         android:layout_height="50dp"
-        android:id="@+id/create"
-        android:text="@string/create"
+        android:id="@+id/loginpbtn"
+        android:text="@string/login_profile"
         android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="@color/black"

@@ -1,4 +1,4 @@
-package com.example.tinytrades.Database
+package com.example.tinytrades.database
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -9,6 +9,7 @@ data class User(
     @PrimaryKey
     @ColumnInfo(name = "username")
     val username: String,
+
     @ColumnInfo(name = "password")
     val password: String
 )

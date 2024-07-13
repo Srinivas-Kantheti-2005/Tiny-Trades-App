@@ -15,6 +15,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adapter: AdapterClass
     private lateinit var searchView: SearchView
     private lateinit var explorebtn: ImageButton
+    private lateinit var profilebtn: ImageButton
+    private lateinit var sellbtn: ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,7 +26,13 @@ class MainActivity : AppCompatActivity() {
 
         searchView = findViewById(R.id.searchView)
         explorebtn = findViewById(R.id.explore)
-        val profilebtn = findViewById<ImageButton>(R.id.profile)
+        profilebtn = findViewById(R.id.profile)
+        sellbtn = findViewById(R.id.sell)
+
+        sellbtn.setOnClickListener {
+            val sell = Intent(this, SellActivity::class.java)
+            startActivity(sell)
+        }
 
         profilebtn.setOnClickListener {
             val loginbtn = Intent(this, ProfileActivity::class.java)

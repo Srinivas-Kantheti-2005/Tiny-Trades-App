@@ -53,4 +53,6 @@
     <string name="save">SAVE</string>
     <string name="new_account">NEW ACCOUNT</string>
     <string name="sellbtn">SELL</string>
+    <string name="login_profile">LOGIN</string>
+    <string name="take_picture">TAKE PICTURE</string>
 </resources>

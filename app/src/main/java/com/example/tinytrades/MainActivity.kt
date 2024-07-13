@@ -22,28 +22,30 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        handleIntent(intent)
-
+        // Initialize views
         searchView = findViewById(R.id.searchView)
         explorebtn = findViewById(R.id.explore)
         profilebtn = findViewById(R.id.profile)
         sellbtn = findViewById(R.id.sell)
 
+        // Set click listeners
         sellbtn.setOnClickListener {
-            val sell = Intent(this, SellActivity::class.java)
-            startActivity(sell)
+            val sellIntent = Intent(this, SellActivity::class.java)
+            startActivity(sellIntent)
         }
 
         profilebtn.setOnClickListener {
-            val loginbtn = Intent(this, ProfileActivity::class.java)
-            startActivity(loginbtn)
+            val profileIntent = Intent(this, ProfileActivity::class.java)
+            startActivity(profileIntent)
         }
 
+        // Initialize RecyclerView
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         adapter = AdapterClass(DataManager.itemsList)
         recyclerView.adapter = adapter
 
+        // Setup SearchView
         searchView.queryHint = "Search Tiny Trades..."
         setupSearchView()
 
@@ -76,18 +78,20 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        // Handle any intent passed to MainActivity
         handleIntent(intent)
     }
 
     private fun handleIntent(intent: Intent) {
-        val navigate_to = intent.getStringExtra("navigate_to")
-        if (navigate_to == "explore") {
+        // Check if intent has extra "navigate_to" and handle accordingly
+        val navigateTo = intent.getStringExtra("navigate_to")
+        if (navigateTo == "explore") {
             navigateToExplore()
         }
     }
 
     private fun navigateToExplore() {
-        val explorebtn = findViewById<ImageButton>(R.id.explore)
+        // Programmatically perform click on explore button
         explorebtn.performClick()
     }
 }

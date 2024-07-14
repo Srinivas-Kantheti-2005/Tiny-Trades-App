@@ -10,19 +10,28 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
 import com.example.tinytrades.database.AppDatabase
+import com.example.tinytrades.database.ItemDao
+import com.example.tinytrades.database.ProfileDao
 import com.example.tinytrades.database.User
+import com.example.tinytrades.database.UserDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class CreateAccount : AppCompatActivity() {
 
+    private lateinit var userDao: UserDao
+    private lateinit var profileDao: ProfileDao
+    private lateinit var itemDao: ItemDao
     private lateinit var database: AppDatabase
+
     private lateinit var createUsername: EditText
     private lateinit var createPassword: EditText
     private lateinit var confirmPassword: EditText
+
     private lateinit var backbtn: ImageButton
     private lateinit var createbtn: Button
+    private lateinit var deletebtn: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,74 +43,107 @@ class CreateAccount : AppCompatActivity() {
             "tinytrades-database"
         ).build()
 
-        createbtn = findViewById(R.id.create)
-        backbtn = findViewById(R.id.backbtn)
+        userDao = database.userDao()
+        profileDao = database.profileDao()
+        itemDao = database.itemDao()
 
-        createbtn.setOnClickListener {
-            getUser()
-        }
+        createUsername = findViewById(R.id.createusername)
+        createPassword = findViewById(R.id.createpassword)
+        confirmPassword = findViewById(R.id.confirmpassword)
+
+        backbtn = findViewById(R.id.backbtn)
+        createbtn = findViewById(R.id.create)
+        deletebtn = findViewById(R.id.delete)
 
         backbtn.setOnClickListener {
             val backbtn = Intent(this, ProfileActivity::class.java)
             startActivity(backbtn)
         }
+
+        createbtn.setOnClickListener {
+            getUser()
+        }
+
+        deletebtn.setOnClickListener {
+            deleteUser()
+        }
+    }
+
+    private fun deleteUser() {
+        val username = createUsername.text.toString()
+//        val password = createPassword.text.toString()
+//        val cpassword = confirmPassword.text.toString()
+
+        if (username.isEmpty()) {
+            showToastMsg("Fill the username field")
+            return
+        }
+        lifecycleScope.launch {
+            val userDelete = withContext(Dispatchers.IO) {
+                database.userDao().getUserByUsername(username)
+            }
+            if (userDelete != null) {
+                withContext(Dispatchers.IO) {
+                    database.userDao().delete(userDelete)
+                }
+                showToastMsg("Credentials deleted successfully")
+            } else {
+                showToastMsg("User not found")
+            }
+            runOnUiThread {
+                clearFields()
+            }
+        }
     }
 
     private fun getUser() {
-        createUsername = findViewById(R.id.createusername)
-        createPassword = findViewById(R.id.createpassword)
-        confirmPassword = findViewById(R.id.confirmpassword)
-
         val username = createUsername.text.toString()
         val password = createPassword.text.toString()
         val cpassword = confirmPassword.text.toString()
 
-        isValidUser(username, password, cpassword, createUsername, createPassword, confirmPassword)
+        isValidUser(username, password, cpassword)
     }
 
     private fun isValidUser(
         username: String,
         password: String,
-        cpassword: String,
-        createUsername: EditText,
-        createPassword: EditText,
-        confirmPassword: EditText
+        cpassword: String
     ) {
         when {
             username.isEmpty() -> {
-                showToastMsg("Fill the create username filed")
+                showToastMsg("Fill the create username field")
             }
 
             password.isEmpty() -> {
-                showToastMsg("Fill the password username filed")
+                showToastMsg("Fill the password field")
             }
 
             !isValidLength(password) -> {
-                showToastMsg("password length must be between 4 to 20 characters")
+                showToastMsg("Password length must be between 4 to 20 characters")
             }
 
             !hasUpperCase(password) -> {
-                showToastMsg("password must contains at least one uppercase letter")
+                showToastMsg("Password must contain at least one uppercase letter")
             }
 
             !hasLowerCase(password) -> {
-                showToastMsg("password must contains at least one lowercase letter")
+                showToastMsg("Password must contain at least one lowercase letter")
             }
 
             !hasDigits(password) -> {
-                showToastMsg("password must contains at least one digit")
+                showToastMsg("Password must contain at least one digit")
             }
 
             !hasSpecialCharacter(password) -> {
-                showToastMsg("password must contains at least one special character")
+                showToastMsg("Password must contain at least one special character")
             }
 
             cpassword.isEmpty() -> {
-                showToastMsg("Fill the confirm password filed")
+                showToastMsg("Fill the confirm password field")
             }
 
             password != cpassword -> {
-                showToastMsg("password and confirm password fields must be same")
+                showToastMsg("Password and confirm password fields must be the same")
             }
 
             else -> {
@@ -109,24 +151,19 @@ class CreateAccount : AppCompatActivity() {
                     val existingUsers = withContext(Dispatchers.IO) {
                         database.userDao().getUserByUsername(username)
                     }
-                    if(existingUsers != null) {
+                    if (existingUsers != null) {
                         runOnUiThread {
-                            showToastMsg("username already exist")
+                            showToastMsg("Username already exists")
                         }
-                    }
-                    else {
+                    } else {
                         val newUser = User(username, password)
                         withContext(Dispatchers.IO) {
                             database.userDao().insertUser(newUser)
                         }
-                    }
-
-                    runOnUiThread {
-                        showToastMsg("Account created successfully")
-
-                        createUsername.text.clear()
-                        createPassword.text.clear()
-                        confirmPassword.text.clear()
+                        runOnUiThread {
+                            showToastMsg("Account created successfully")
+                            clearFields()
+                        }
                     }
                 }
             }
@@ -145,16 +182,22 @@ class CreateAccount : AppCompatActivity() {
         return password.any { it.isUpperCase() }
     }
 
-    private fun hasDigits(password: String): Boolean {
-        return password.any { it.isDigit() }
-    }
-
     private fun hasLowerCase(password: String): Boolean {
         return password.any { it.isLowerCase() }
     }
 
+    private fun hasDigits(password: String): Boolean {
+        return password.any { it.isDigit() }
+    }
+
     private fun hasSpecialCharacter(password: String): Boolean {
-        val sepcialCharacters = "!@#$%^&*()-_=+[]{}|;:/,.?<>`~"
-        return password.any { it in sepcialCharacters }
+        val specialCharacters = "!@#$%^&*()-_=+[]{}|;:/,.?<>`~"
+        return password.any { it in specialCharacters }
+    }
+
+    private fun clearFields() {
+        createUsername.text.clear()
+        createPassword.text.clear()
+        confirmPassword.text.clear()
     }
 }

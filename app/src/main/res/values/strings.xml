@@ -56,4 +56,7 @@
     <string name="login_profile">LOGIN</string>
     <string name="take_picture">TAKE PICTURE</string>
     <string name="user">username</string>
+    <string name="delete">DELETE</string>
+    <string name="update">UPDATE</string>
+    <string name="gallery">GALLERY</string>
 </resources>

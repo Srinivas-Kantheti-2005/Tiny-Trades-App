@@ -35,7 +35,7 @@ data class Profile(
     val gender: String,
 
     @ColumnInfo(name = "Mobile")
-    val mobile: Int,
+    val mobile: Long,
 
     @ColumnInfo(name = "DNo")
     val dno: String,
@@ -47,7 +47,7 @@ data class Profile(
     val village: String,
 
     @ColumnInfo(name = "Pin code")
-    val pinCode: Int,
+    val pinCode: Long,
 
     @ColumnInfo(name = "Mandal")
     val mandal: String,

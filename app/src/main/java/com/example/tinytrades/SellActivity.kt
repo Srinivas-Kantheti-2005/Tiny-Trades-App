@@ -6,6 +6,8 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.Button
@@ -16,30 +18,73 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
+import androidx.room.Room
+import com.example.tinytrades.database.AppDatabase
+import com.example.tinytrades.database.Item
+import com.example.tinytrades.database.ItemDao
+import com.example.tinytrades.database.ProfileDao
+import com.example.tinytrades.database.UserDao
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
 
 class SellActivity : AppCompatActivity() {
 
+    private lateinit var userDao: UserDao
+    private lateinit var profileDao: ProfileDao
+    private lateinit var itemDao: ItemDao
+    private lateinit var database: AppDatabase
+
     private lateinit var backbtn: ImageButton
+    private lateinit var takepicture: Button
+    private lateinit var gallery: Button
+    private lateinit var save: Button
+    private lateinit var update: Button
+
     private lateinit var image: ImageView
     private lateinit var title: EditText
-    private lateinit var size: EditText
+    private lateinit var username: EditText
     private lateinit var price: EditText
-    private lateinit var takepicture: Button
+    private lateinit var emaildId: EditText
+    private lateinit var size: EditText
 
     private val REQUEST_IMAGE_CAPTURE = 1
     private val REQUEST_CAMERA_PERMISSION = 2
+    private val REQUEST_IMAGE_GALLERY = 3
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sell)
 
+        database = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java,
+            "tinytrades-database"
+        ).build()
+
+        userDao = database.userDao()
+        profileDao = database.profileDao()
+        itemDao = database.itemDao()
+
         backbtn = findViewById(R.id.backbtn)
+        takepicture = findViewById(R.id.takepicture)
+        gallery = findViewById(R.id.gallery)
+        save = findViewById(R.id.save)
+        update = findViewById(R.id.update)
+
         image = findViewById(R.id.image)
         title = findViewById(R.id.title)
-        size = findViewById(R.id.size)
+        username = findViewById(R.id.username)
         price = findViewById(R.id.price)
-        takepicture = findViewById(R.id.takepicture)
+        emaildId = findViewById(R.id.emailid)
+        size = findViewById(R.id.size)
+
+        backbtn.setOnClickListener {
+            onBackPressed()
+        }
 
         takepicture.setOnClickListener {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
@@ -55,8 +100,107 @@ class SellActivity : AppCompatActivity() {
             }
         }
 
-        backbtn.setOnClickListener {
-            onBackPressed()
+        gallery.setOnClickListener {
+            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            startActivityForResult(intent, REQUEST_IMAGE_GALLERY)
+        }
+
+        save.setOnClickListener {
+            saveItem()
+        }
+
+
+        update.setOnClickListener {}
+
+    }
+
+    private fun saveItem() {
+        val imageDrawable = image.drawable
+        val itemImage: ByteArray? = if (imageDrawable != null) {
+            val bitmap = (imageDrawable as BitmapDrawable).bitmap
+            val byteArrayOutputStream = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
+            byteArrayOutputStream.toByteArray()
+        } else {
+            null
+        }
+
+        val titleText = title.text.toString()
+        val userName = username.text.toString()
+        val priceText = price.text.toString()
+        val emailIdText = emaildId.text.toString()
+        val sizeText = size.text.toString()
+
+        if(itemSave(itemImage, titleText, userName, priceText, emailIdText, sizeText)) {
+            lifecycleScope.launch {
+                val existingUser = withContext(Dispatchers.IO) {
+                    database.userDao().getUserByUsername(userName)
+                }
+
+                val existingProfile = withContext(Dispatchers.IO) {
+                    database.profileDao().getProfileByEmailId(emailIdText)
+                }
+
+                val existingItem = withContext(Dispatchers.IO) {
+                    database.itemDao().getItemByTitle(titleText)
+                }
+
+                if(existingUser != null) {
+                    if(existingProfile != null) {
+                        if (existingItem == null) {
+                            withContext(Dispatchers.IO) {
+                                val newItem = Item(image = itemImage,
+                                    title = titleText,
+                                    username = userName,
+                                    price = priceText.toDouble(),
+                                    emailid = emailIdText,
+                                    size = sizeText
+                                )
+                                itemDao.insert(newItem)
+                            }
+                            showToastMsg("Item added successfully")
+                        }
+                        showToastMsg("profile not found")
+                    }
+                    showToastMsg("account not found")
+                }
+            }
+        }
+    }
+
+    private fun itemSave(itemImage: ByteArray?, titleText: String, userName: String, priceText: String, emailIdText: String, sizeText: String): Boolean {
+        return when {
+            itemImage == null -> {
+                showToastMsg("upload the image")
+                false
+            }
+
+            titleText.isEmpty() -> {
+                showToastMsg("Fill the title field")
+                false
+            }
+
+            userName.isEmpty() -> {
+                showToastMsg("Fill the username field")
+                false
+            }
+
+            priceText.isEmpty() -> {
+                showToastMsg("Fill the price field")
+                false
+            }
+
+            emailIdText.isEmpty() -> {
+                showToastMsg("Fill the email id field")
+                false
+            }
+
+            sizeText.isEmpty() -> {
+                showToastMsg("Fill the size field")
+                false
+            }
+
+            else -> true
         }
     }
 
@@ -72,9 +216,20 @@ class SellActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
-            val imageBitmap = data?.extras?.get("data") as Bitmap
-            image.setImageBitmap(imageBitmap)
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                REQUEST_IMAGE_CAPTURE -> {
+                    val imageBitmap = data?.extras?.get("data") as Bitmap
+                    image.setImageBitmap(imageBitmap)
+                }
+                REQUEST_IMAGE_GALLERY -> {
+                    val selectedImageUri: Uri? = data?.data
+                    selectedImageUri?.let {
+                        val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, it)
+                        image.setImageBitmap(bitmap)
+                    }
+                }
+            }
         }
     }
 
@@ -94,6 +249,19 @@ class SellActivity : AppCompatActivity() {
                 return
             }
         }
+    }
+
+    private fun showToastMsg(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun clearFields() {
+        image.setImageResource(0)
+        title.text.clear()
+        username.text.clear()
+        price.text.clear()
+        emaildId.text.clear()
+        size.text.clear()
     }
 
     override fun onBackPressed() {

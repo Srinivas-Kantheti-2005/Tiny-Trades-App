@@ -28,13 +28,13 @@ data class Item(
     val title: String,
 
     @ColumnInfo(name = "Image")
-    val image: Int,
+    val image: ByteArray?,
 
     @ColumnInfo(name = "Size")
     val size: String,
 
     @ColumnInfo(name = "Price")
-    val price: String,
+    val price: Double,
 
     @ColumnInfo(name = "username")
     val username: String,

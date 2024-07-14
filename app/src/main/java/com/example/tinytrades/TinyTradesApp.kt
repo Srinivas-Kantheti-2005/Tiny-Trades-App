@@ -5,8 +5,11 @@ import androidx.room.Room
 import com.example.tinytrades.database.AppDatabase
 
 class TinyTradesApp : Application() {
-    lateinit var database: AppDatabase
 
+    companion object {
+        lateinit var database: AppDatabase
+            private set
+    }
     override fun onCreate() {
         super.onCreate()
 

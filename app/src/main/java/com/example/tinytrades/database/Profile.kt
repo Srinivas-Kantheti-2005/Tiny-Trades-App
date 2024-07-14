@@ -22,7 +22,7 @@ data class Profile(
     @ColumnInfo(name = "username")
     val username: String,
 
-    @ColumnInfo(name = "Image")
+    @ColumnInfo(name = "image")
     val image: Int,
 
     @ColumnInfo(name = "First Name")

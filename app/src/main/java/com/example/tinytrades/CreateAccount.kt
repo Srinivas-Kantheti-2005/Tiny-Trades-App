@@ -21,6 +21,7 @@ class CreateAccount : AppCompatActivity() {
     private lateinit var createUsername: EditText
     private lateinit var createPassword: EditText
     private lateinit var confirmPassword: EditText
+    private lateinit var backbtn: ImageButton
     private lateinit var createbtn: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,12 +35,11 @@ class CreateAccount : AppCompatActivity() {
         ).build()
 
         createbtn = findViewById(R.id.create)
+        backbtn = findViewById(R.id.backbtn)
 
         createbtn.setOnClickListener {
             getUser()
         }
-
-        val backbtn = findViewById<ImageButton>(R.id.backbtn)
 
         backbtn.setOnClickListener {
             val backbtn = Intent(this, ProfileActivity::class.java)
@@ -77,7 +77,7 @@ class CreateAccount : AppCompatActivity() {
             }
 
             !isValidLength(password) -> {
-                showToastMsg("password length must be between 4 to 8 characters")
+                showToastMsg("password length must be between 4 to 20 characters")
             }
 
             !hasUpperCase(password) -> {
@@ -86,6 +86,10 @@ class CreateAccount : AppCompatActivity() {
 
             !hasLowerCase(password) -> {
                 showToastMsg("password must contains at least one lowercase letter")
+            }
+
+            !hasDigits(password) -> {
+                showToastMsg("password must contains at least one digit")
             }
 
             !hasSpecialCharacter(password) -> {
@@ -101,7 +105,6 @@ class CreateAccount : AppCompatActivity() {
             }
 
             else -> {
-
                 lifecycleScope.launch {
                     val existingUsers = withContext(Dispatchers.IO) {
                         database.userDao().getUserByUsername(username)
@@ -135,11 +138,15 @@ class CreateAccount : AppCompatActivity() {
     }
 
     private fun isValidLength(password: String): Boolean {
-        return password.length in 4..8
+        return password.length in 4..20
     }
 
     private fun hasUpperCase(password: String): Boolean {
         return password.any { it.isUpperCase() }
+    }
+
+    private fun hasDigits(password: String): Boolean {
+        return password.any { it.isDigit() }
     }
 
     private fun hasLowerCase(password: String): Boolean {

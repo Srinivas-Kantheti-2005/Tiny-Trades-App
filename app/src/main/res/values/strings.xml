@@ -55,4 +55,5 @@
     <string name="sellbtn">SELL</string>
     <string name="login_profile">LOGIN</string>
     <string name="take_picture">TAKE PICTURE</string>
+    <string name="user">username</string>
 </resources>

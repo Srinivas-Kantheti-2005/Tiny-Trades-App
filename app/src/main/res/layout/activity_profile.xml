@@ -56,6 +56,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/username"
+        android:hint="@string/user"
+        android:textSize="16sp"
+        android:textStyle="normal"
+        android:textColor="@color/black"
+        android:textColorHint="@color/hint"
+        android:padding="10dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginTop="0dp"
+        android:background="@color/dim_background"
+        app:layout_constraintStart_toStartOf="@id/profileimage"
+        app:layout_constraintEnd_toEndOf="@id/profileimage"
+        app:layout_constraintTop_toBottomOf="@id/profileimage"/>
+
     <Button
         android:layout_width="100dp"
         android:layout_height="50dp"
@@ -86,7 +104,7 @@
         android:layout_marginEnd="5dp"
         android:padding="10dp"
         android:background="@color/dim_background"
-        app:layout_constraintTop_toBottomOf="@id/profileimage"
+        app:layout_constraintTop_toBottomOf="@id/username"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/lastname"
         app:layout_constraintBottom_toTopOf="@id/gender"/>
@@ -110,7 +128,7 @@
         app:layout_constraintBottom_toTopOf="@id/mobileno"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/firstname"
-        app:layout_constraintTop_toBottomOf="@id/profileimage"
+        app:layout_constraintTop_toBottomOf="@id/username"
         app:layout_constraintVertical_bias="0.0" />
 
     <EditText

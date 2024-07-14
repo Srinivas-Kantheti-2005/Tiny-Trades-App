@@ -19,6 +19,12 @@ class ProfileActivity : AppCompatActivity() {
         val explorebtn = findViewById<ImageButton>(R.id.explore)
         val loginbtn = findViewById<Button>(R.id.loginpbtn)
         val newaccountbtn = findViewById<Button>(R.id.newaccount)
+        val sellbtn = findViewById<ImageButton>(R.id.sell)
+
+        sellbtn.setOnClickListener {
+            val sellIntent = Intent(this, SellActivity::class.java)
+            startActivity(sellIntent)
+        }
 
         backbtn.setOnClickListener {
             onBackPressed()

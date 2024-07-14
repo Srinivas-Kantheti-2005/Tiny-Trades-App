@@ -17,20 +17,14 @@ class ItemDetailsActivity : AppCompatActivity() {
         val itemTitle: TextView = findViewById(R.id.itemTitle)
         val itemSize: TextView = findViewById(R.id.itemSize)
         val itemPrice: TextView = findViewById(R.id.itemPrice)
-        val sellername: TextView = findViewById(R.id.sellername)
         val backbtn = findViewById<ImageButton>(R.id.backbtn)
-
-//        sellername.setOnClickListener {
-//            val intent = Intent(this, SellerProfileActivity::class.java)
-//            startActivity(intent)
-//        }
 
         backbtn.setOnClickListener {
             onBackPressed()
         }
 
         val bundle = intent.extras
-        if (bundle != null && bundle.containsKey("itemImage")) {
+        if (bundle != null) {
             val itemImageResId = bundle.getInt("itemImage")
             val itemTitleText = bundle.getString("itemTitle", "")
             val itemSizeText = bundle.getString("itemSize", "")

@@ -59,4 +59,6 @@
     <string name="delete">DELETE</string>
     <string name="update">UPDATE</string>
     <string name="gallery">GALLERY</string>
+    <string name="enter_your_email_id">Enter your email id</string>
+    <string name="quantity">Quantity</string>
 </resources>

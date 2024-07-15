@@ -6,24 +6,21 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
 import com.example.tinytrades.database.AppDatabase
-import com.example.tinytrades.database.ItemDao
 import com.example.tinytrades.database.Profile
 import com.example.tinytrades.database.ProfileDao
-import com.example.tinytrades.database.UserDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ProfileActivity : AppCompatActivity() {
 
-    private lateinit var userDao: UserDao
     private lateinit var profileDao: ProfileDao
-    private lateinit var itemDao: ItemDao
     private lateinit var database: AppDatabase
 
     private lateinit var backbtn: ImageButton
@@ -31,9 +28,9 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var explorebtn: ImageButton
     private lateinit var sellbtn: ImageButton
 
-    private lateinit var updatebtn: Button
     private lateinit var savebtn: Button
     private lateinit var deletebtn: Button
+    private lateinit var updatebtn: Button
     private lateinit var loginbtn: Button
     private lateinit var newaccountbtn: Button
 
@@ -49,8 +46,8 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var pincode: EditText
     private lateinit var mandal: EditText
     private lateinit var district: EditText
+    private lateinit var profileImage: ImageView
 
-    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
@@ -59,11 +56,11 @@ class ProfileActivity : AppCompatActivity() {
             applicationContext,
             AppDatabase::class.java,
             "tinytrades-database"
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
 
-        userDao = database.userDao()
         profileDao = database.profileDao()
-        itemDao = database.itemDao()
 
         backbtn = findViewById(R.id.backbtn)
         homebtn = findViewById(R.id.home)
@@ -88,9 +85,24 @@ class ProfileActivity : AppCompatActivity() {
         pincode = findViewById(R.id.pincode)
         mandal = findViewById(R.id.mandal)
         district = findViewById(R.id.district)
+        profileImage = findViewById(R.id.profileimage)
+
+        val usernameExtra = intent.getStringExtra("USERNAME") ?: ""
+
+        lifecycleScope.launch {
+            val profile = withContext(Dispatchers.IO) {
+                profileDao.getProfileByUsername(usernameExtra)
+            }
+
+            if (profile != null) {
+                populateFields(profile)
+            } else {
+                showToast("Profile not found")
+            }
+        }
 
         savebtn.setOnClickListener {
-            getProfile()
+            saveProfile()
         }
 
         deletebtn.setOnClickListener {
@@ -111,25 +123,124 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         newaccountbtn.setOnClickListener {
-            val createaccount = Intent(this, CreateAccount::class.java)
-            startActivity(createaccount)
+            val createAccountIntent = Intent(this, CreateAccount::class.java)
+            startActivity(createAccountIntent)
         }
 
         loginbtn.setOnClickListener {
-            val login = Intent(this, LoginPage::class.java)
-            startActivity(login)
+            val loginIntent = Intent(this, LoginPage::class.java)
+            startActivity(loginIntent)
         }
 
         explorebtn.setOnClickListener {
-            val explorebtn = Intent(this, MainActivity::class.java).apply {
+            val exploreIntent = Intent(this, MainActivity::class.java).apply {
                 putExtra("navigate_to", "explore")
             }
-            startActivity(explorebtn)
+            startActivity(exploreIntent)
         }
 
         homebtn.setOnClickListener {
-            val home = Intent(this, MainActivity::class.java)
-            startActivity(home)
+            val homeIntent = Intent(this, MainActivity::class.java)
+            startActivity(homeIntent)
+        }
+    }
+
+    private fun populateFields(profile: Profile) {
+        username.setText(profile.username)
+        firstname.setText(profile.firstname)
+        lastname.setText(profile.lastname)
+        gender.setText(profile.gender)
+        mobileno.setText(profile.mobile.toString())
+        emailid.setText(profile.emailId)
+        dno.setText(profile.dno)
+        street.setText(profile.street)
+        village.setText(profile.village)
+        pincode.setText(profile.pinCode.toString())
+        mandal.setText(profile.mandal)
+        district.setText(profile.district)
+
+        val profileImageResource = if (profile.gender.equals("male", ignoreCase = true)) {
+            R.drawable.men
+        } else {
+            R.drawable.women
+        }
+        profileImage.setImageResource(profileImageResource)
+    }
+
+    private fun saveProfile() {
+        val userName = username.text.toString()
+        val firstName = firstname.text.toString()
+        val lastName = lastname.text.toString()
+        val genderText = gender.text.toString()
+        val mobileNo = mobileno.text.toString()
+        val emailId = emailid.text.toString()
+        val dNo = dno.text.toString()
+        val streetText = street.text.toString()
+        val villageText = village.text.toString()
+        val pinCode = pincode.text.toString()
+        val mandalText = mandal.text.toString()
+        val districtText = district.text.toString()
+
+        if (isValidProfile(firstName, lastName, genderText, mobileNo, emailId, userName, dNo, streetText, villageText, pinCode, mandalText, districtText)) {
+            val profileImage = if (genderText.equals("male", ignoreCase = true)) {
+                R.drawable.men
+            } else {
+                R.drawable.women
+            }
+
+            lifecycleScope.launch {
+                val existingProfile = withContext(Dispatchers.IO) {
+                    profileDao.getProfileByUsername(userName)
+                }
+
+                if (existingProfile == null) {
+                    val newProfile = Profile(
+                        username = userName,
+                        emailId = emailId,
+                        firstname = firstName,
+                        lastname = lastName,
+                        gender = genderText,
+                        mobile = mobileNo.toLong(),
+                        dno = dNo,
+                        street = streetText,
+                        village = villageText,
+                        pinCode = pinCode.toLong(),
+                        mandal = mandalText,
+                        district = districtText,
+                        image = profileImage
+                    )
+
+                    withContext(Dispatchers.IO) {
+                        profileDao.insert(newProfile)
+                    }
+                    showToast("Profile created successfully")
+                } else {
+                    showToast("Profile already exists")
+                }
+            }
+        }
+    }
+
+
+    private fun deleteProfile() {
+        val emailIdValue = emailid.text.toString()
+        if (emailIdValue.isEmpty()) {
+            showToast("Enter email id")
+            return
+        }
+        lifecycleScope.launch {
+            val profile = withContext(Dispatchers.IO) {
+                profileDao.getProfileByEmailId(emailIdValue)
+            }
+            if (profile != null && profile.emailId.isNotEmpty()) {
+                withContext(Dispatchers.IO) {
+                    profileDao.delete(profile)
+                }
+                showToast("Profile deleted successfully")
+                clearFields()
+            } else {
+                showToast("Profile not found")
+            }
         }
     }
 
@@ -156,13 +267,14 @@ class ProfileActivity : AppCompatActivity() {
 
             lifecycleScope.launch {
                 val existingProfile = withContext(Dispatchers.IO) {
-                    database.profileDao().getProfileByUsername(userName)
+                    profileDao.getProfileByEmailId(emailId)
                 }
 
                 if (existingProfile == null) {
-                    showToastMsg("Profile not found")
+                    showToast("Profile not found")
                 } else {
                     val updatedProfile = existingProfile.copy(
+                        username = userName,
                         emailId = emailId,
                         firstname = firstName,
                         lastname = lastName,
@@ -178,92 +290,9 @@ class ProfileActivity : AppCompatActivity() {
                     )
 
                     withContext(Dispatchers.IO) {
-                        database.profileDao().update(updatedProfile)
+                        profileDao.update(updatedProfile)
                     }
-                    showToastMsg("Profile updated successfully")
-                }
-            }
-        }
-    }
-
-    private fun deleteProfile() {
-        val emailId = emailid.text.toString()
-        if (emailId.isEmpty()) {
-            showToastMsg("Fill the email id field")
-            return
-        }
-        lifecycleScope.launch {
-            val profileDelete = withContext(Dispatchers.IO) {
-                database.profileDao().getProfileByEmailId(emailId)
-            }
-            if (profileDelete != null) {
-                withContext(Dispatchers.IO) {
-                    database.profileDao().delete(profileDelete)
-                }
-                showToastMsg("Profile deleted successfully")
-                clearFields()
-            } else {
-                showToastMsg("Profile not found")
-            }
-        }
-    }
-
-    private fun getProfile() {
-        val userName = username.text.toString()
-        val firstName = firstname.text.toString()
-        val lastName = lastname.text.toString()
-        val genderText = gender.text.toString()
-        val mobileNo = mobileno.text.toString()
-        val emailId = emailid.text.toString()
-        val dNo = dno.text.toString()
-        val streetText = street.text.toString()
-        val villageText = village.text.toString()
-        val pinCode = pincode.text.toString()
-        val mandalText = mandal.text.toString()
-        val districtText = district.text.toString()
-
-        if (isValidProfile(firstName, lastName, genderText, mobileNo, emailId, userName, dNo, streetText, villageText, pinCode, mandalText, districtText)) {
-            val profileImage = if (genderText.equals("male", ignoreCase = true)) {
-                R.drawable.men
-            } else {
-                R.drawable.women
-            }
-
-            lifecycleScope.launch {
-                val existingUser = withContext(Dispatchers.IO) {
-                    database.userDao().getUserByUsername(userName)
-                }
-
-                if (existingUser == null) {
-                    showToastMsg("Username not found")
-                } else {
-                    val existingProfile = withContext(Dispatchers.IO) {
-                        database.profileDao().getProfileByUsername(userName)
-                    }
-
-                    if (existingProfile != null) {
-                        showToastMsg("Profile already exists")
-                    } else {
-                        val newProfile = Profile(
-                            emailId = emailId,
-                            username = userName,
-                            image = profileImage,
-                            firstname = firstName,
-                            lastname = lastName,
-                            gender = genderText,
-                            mobile = mobileNo.toLong(),
-                            dno = dNo,
-                            street = streetText,
-                            village = villageText,
-                            pinCode = pinCode.toLong(),
-                            mandal = mandalText,
-                            district = districtText
-                        )
-                        withContext(Dispatchers.IO) {
-                            database.profileDao().insert(newProfile)
-                        }
-                        showToastMsg("Profile created successfully")
-                    }
+                    showToast("Profile updated successfully")
                 }
             }
         }
@@ -272,71 +301,71 @@ class ProfileActivity : AppCompatActivity() {
     private fun isValidProfile(
         firstName: String,
         lastName: String,
-        genderText: String,
+        gender: String,
         mobileNo: String,
         emailId: String,
         userName: String,
         dNo: String,
-        streetText: String,
-        villageText: String,
+        street: String,
+        village: String,
         pinCode: String,
-        mandalText: String,
-        districtText: String
+        mandal: String,
+        district: String
     ): Boolean {
         return when {
             firstName.isEmpty() -> {
-                showToastMsg("Fill the first name field")
+                showToast("Enter first name")
                 false
             }
             lastName.isEmpty() -> {
-                showToastMsg("Fill the last name field")
+                showToast("Enter last name")
                 false
             }
-            genderText.isEmpty() -> {
-                showToastMsg("Fill the gender field")
+            gender.isEmpty() -> {
+                showToast("Enter gender")
                 false
             }
             mobileNo.isEmpty() -> {
-                showToastMsg("Fill the mobile no field")
+                showToast("Enter mobile number")
                 false
             }
             emailId.isEmpty() -> {
-                showToastMsg("Fill the email id field")
+                showToast("Enter email id")
                 false
             }
             userName.isEmpty() -> {
-                showToastMsg("Fill the username field")
+                showToast("Enter username")
                 false
             }
             dNo.isEmpty() -> {
-                showToastMsg("Fill the dno field")
+                showToast("Enter door number")
                 false
             }
-            streetText.isEmpty() -> {
-                showToastMsg("Fill the street field")
+            street.isEmpty() -> {
+                showToast("Enter street")
                 false
             }
-            villageText.isEmpty() -> {
-                showToastMsg("Fill the village field")
+            village.isEmpty() -> {
+                showToast("Enter village")
                 false
             }
             pinCode.isEmpty() -> {
-                showToastMsg("Fill the pincode field")
+                showToast("Enter pin code")
                 false
             }
-            mandalText.isEmpty() -> {
-                showToastMsg("Fill the mandal field")
+            mandal.isEmpty() -> {
+                showToast("Enter mandal")
                 false
             }
-            districtText.isEmpty() -> {
-                showToastMsg("Fill the district field")
+            district.isEmpty() -> {
+                showToast("Enter district")
                 false
             }
             else -> true
         }
     }
 
-    private fun showToastMsg(message: String) {
+    private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
@@ -353,5 +382,10 @@ class ProfileActivity : AppCompatActivity() {
         pincode.text.clear()
         mandal.text.clear()
         district.text.clear()
+    }
+
+    @SuppressLint("MissingSuperCall")
+    override fun onBackPressed() {
+        finish()
     }
 }

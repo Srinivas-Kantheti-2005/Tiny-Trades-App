@@ -17,6 +17,8 @@ class TinyTradesApp : Application() {
             applicationContext,
             AppDatabase::class.java,
             "tinytrades-database"
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
     }
 }

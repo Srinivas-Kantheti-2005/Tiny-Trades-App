@@ -34,7 +34,7 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <EditText
-        android:layout_width="match_parent"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:id="@+id/title"
         android:autofillHints="no"
@@ -46,9 +46,26 @@
         android:textColor="@color/black"
         android:textColorHint="@color/hint"
         android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="0dp"
         android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/image"/>
+
+    <EditText
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/quantity"
+        android:autofillHints="no"
+        android:padding="15dp"
+        android:hint="@string/quantity"
+        android:inputType="number"
+        android:textSize="16sp"
+        android:textStyle="normal"
+        android:textColor="@color/black"
+        android:textColorHint="@color/hint"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/image"/>
 
@@ -88,7 +105,7 @@
         android:layout_marginEnd="10dp"
         android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title"/>
+        app:layout_constraintTop_toBottomOf="@id/quantity"/>
 
     <EditText
         android:layout_width="300dp"
@@ -134,7 +151,7 @@
         android:text="@string/take_picture"
         android:textColor="@color/black"
         android:textSize="20sp"
-        android:textStyle="bold"
+        android:textStyle="normal"
         android:backgroundTint="@color/orange"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="0dp"
@@ -149,7 +166,7 @@
         android:text="@string/gallery"
         android:textColor="@color/black"
         android:textSize="20sp"
-        android:textStyle="bold"
+        android:textStyle="normal"
         android:backgroundTint="@color/orange"
         android:layout_marginStart="0dp"
         android:layout_marginEnd="10dp"
@@ -163,10 +180,10 @@
         android:id="@+id/save"
         android:text="@string/save"
         android:textSize="20sp"
-        android:textStyle="bold"
+        android:textStyle="normal"
         android:textColor="@color/black"
         android:backgroundTint="@color/orange"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_marginStart="0dp"
         android:layout_marginEnd="0dp"
         app:layout_constraintTop_toBottomOf="@id/takepicture"
@@ -179,14 +196,28 @@
         android:id="@+id/update"
         android:text="@string/update"
         android:textSize="20sp"
-        android:textStyle="bold"
+        android:textStyle="normal"
+        android:textColor="@color/black"
+        android:backgroundTint="@color/orange"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        app:layout_constraintTop_toBottomOf="@id/gallery"
+        app:layout_constraintStart_toStartOf="@id/gallery"
+        app:layout_constraintEnd_toEndOf="@id/gallery"/>
+
+    <Button
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:id="@+id/delete"
+        android:text="@string/delete"
+        android:textSize="20sp"
+        android:textStyle="normal"
         android:textColor="@color/black"
         android:backgroundTint="@color/orange"
         android:layout_marginTop="20dp"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
-        app:layout_constraintTop_toBottomOf="@id/takepicture"
-        app:layout_constraintStart_toStartOf="@id/gallery"
-        app:layout_constraintEnd_toEndOf="@id/gallery"/>
+        android:layout_marginEnd="10dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

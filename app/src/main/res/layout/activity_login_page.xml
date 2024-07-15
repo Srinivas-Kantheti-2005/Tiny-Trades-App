@@ -46,7 +46,7 @@
 
     <EditText
         android:id="@+id/username"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="54dp"
         android:layout_marginEnd="54dp"
@@ -63,51 +63,72 @@
         android:textColorHint="@color/hint"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/backbtn" />
+        app:layout_constraintTop_toBottomOf="@+id/backbtn"
+        app:layout_constraintBottom_toTopOf="@id/emailid"/>
 
     <EditText
-        android:id="@+id/password"
-        android:layout_width="0dp"
+        android:id="@+id/emailid"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginStart="54dp"
-        android:layout_marginEnd="54dp"
-        android:layout_marginBottom="21dp"
         android:background="@color/dim_background"
-        android:drawableStart="@drawable/baseline_fingerprint_24"
-        android:drawablePadding="20dp"
-        android:ems="10"
-        android:hint="@string/password"
         android:importantForAutofill="no"
-        android:inputType="none"
         android:padding="15dp"
+        android:ems="10"
+        android:hint="@string/enter_your_email_id"
+        android:inputType="textEmailAddress"
         android:textColor="@color/black"
         android:textColorHint="@color/hint"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/forgotpassword"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="54dp"
+        android:layout_marginEnd="54dp"
+        android:drawableStart="@drawable/baseline_email_24"
+        android:drawablePadding="20dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/username"
-        tools:ignore="TextFields" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/username"/>
+
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/dim_background"
+        android:importantForAutofill="no"
+        android:padding="15dp"
+        android:ems="10"
+        android:hint="@string/password"
+        android:inputType="none"
+        android:textColor="@color/black"
+        android:textColorHint="@color/hint"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="54dp"
+        android:layout_marginEnd="54dp"
+        android:layout_marginBottom="21dp"
+        android:drawableStart="@drawable/baseline_fingerprint_24"
+        android:drawablePadding="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/emailid"
+        tools:ignore="TextFields"/>
 
     <Button
         android:id="@+id/forgotpassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
         android:backgroundTint="@color/background"
         android:text="@string/forgot_password"
         android:textColor="@color/orange"
         android:textSize="12sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/loginbtn"
-        app:layout_constraintEnd_toEndOf="@+id/loginbtn"
-        app:layout_constraintStart_toEndOf="@+id/loginbtn"
-        app:layout_constraintTop_toBottomOf="@+id/password"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="35dp"
+        app:layout_constraintTop_toBottomOf="@id/password"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="SmallSp" />
 
     <Button
@@ -121,9 +142,9 @@
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/forgotpassword"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/forgotpassword" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

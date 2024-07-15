@@ -9,14 +9,23 @@ import androidx.room.Update
 @Dao
 interface ItemDao {
     @Insert
-    fun insert(item: Item)
+    suspend fun insert(item: Item)
 
-    @Query("select * from item where title = :title")
-    fun getItemByTitle(title: String): Item?
+    @Query("SELECT * FROM item")
+    suspend fun getAllItems(): List<Item>
+
+    @Query("SELECT * FROM item WHERE username = :username")
+    suspend fun getItemsBySeller(username: String): List<Item>
+
+    @Query("SELECT * FROM item WHERE title LIKE :query")
+    suspend fun searchItems(query: String): List<Item>
+
+    @Query("SELECT * FROM item WHERE title = :title")
+    suspend fun getItemByTitle(title: String): Item?
 
     @Update
-    fun update(item: Item)
+    suspend fun update(item: Item)
 
     @Delete
-    fun delete(item: Item)
+    suspend fun delete(item: Item)
 }

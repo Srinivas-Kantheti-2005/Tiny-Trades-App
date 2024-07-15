@@ -23,12 +23,18 @@ import androidx.room.PrimaryKey
     ]
 )
 data class Item(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "Id")
+    val id: Int = 0,
+
     @ColumnInfo(name = "Title")
     val title: String,
 
     @ColumnInfo(name = "Image")
     val image: ByteArray?,
+
+    @ColumnInfo(name = "Quantity")
+    val quantity: Int,
 
     @ColumnInfo(name = "Size")
     val size: String,

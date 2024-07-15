@@ -30,6 +30,7 @@ class LoginPage : AppCompatActivity() {
     private lateinit var loginbtn: Button
 
     private lateinit var username: EditText
+    private lateinit var emailID: EditText
     private lateinit var password: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +41,9 @@ class LoginPage : AppCompatActivity() {
             applicationContext,
             AppDatabase::class.java,
             "tinytrades-database"
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
 
         userDao = database.userDao()
         profileDao = database.profileDao()
@@ -51,7 +54,8 @@ class LoginPage : AppCompatActivity() {
         loginbtn = findViewById(R.id.loginbtn)
 
         backbtn.setOnClickListener {
-            onBackPressed()
+            val backbtn = Intent(this, ProfileActivity::class.java)
+            startActivity(backbtn)
         }
 
         forgotpasswordbtn.setOnClickListener {
@@ -60,59 +64,71 @@ class LoginPage : AppCompatActivity() {
         }
 
         loginbtn.setOnClickListener {
-            Login()
+            login()
         }
     }
 
-    private fun Login() {
+    private fun login() {
         username = findViewById(R.id.username)
+        emailID = findViewById(R.id.emailid)
         password = findViewById(R.id.password)
 
         val userName = username.text.toString()
+        val emaiLID = emailID.text.toString()
         val passWord = password.text.toString()
 
-        if(isValidCredentials(userName, passWord)) {
+        if (isValidCredentials(userName, passWord)) {
             lifecycleScope.launch {
                 val user = withContext(Dispatchers.IO) {
-                    database.userDao().getUserByUsername(userName)
+                    userDao.getUserByUsername(userName)
                 }
-                if(user == null) {
-                    showToastMsg("account not found")
+                val profile = withContext(Dispatchers.IO) {
+                    profileDao.getProfileByUsername(userName)
                 }
-                else if(user.password != passWord) {
-                    showToastMsg("Invalid password")
-                }
-                else {
-                    showToastMsg("Login successfully")
-                    clearFields()
-                    val profileIntent = Intent(this@LoginPage, ProfileActivity::class.java)
-                    startActivity(profileIntent)
-                    finish()
+
+                if (user == null) {
+                    showToast("Account not found")
+                } else if (user.password != passWord) {
+                    showToast("Invalid password")
+                } else {
+                    if(profile != null) {
+                        showToast("Login successful")
+                        clearFields()
+                        val profileIntent = Intent(this@LoginPage, ProfileActivity::class.java).apply {
+                            putExtra("USERNAME", userName)
+                        }
+                        startActivity(profileIntent)
+                        finish()
+                    }
+                    else {
+                        showToast("account not found")
+                    }
                 }
             }
         }
     }
 
     private fun isValidCredentials(userName: String, passWord: String): Boolean {
-        return when  {
+        return when {
             userName.isEmpty() -> {
-                showToastMsg("Fill the username field")
+                showToast("Enter username")
                 false
             }
             passWord.isEmpty() -> {
-                showToastMsg("Fill the password field")
+                showToast("Enter password")
                 false
             }
             else -> true
         }
     }
 
-    private fun showToastMsg(message: String) {
+    private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun clearFields() {
         username.text.clear()
+        emailID.text.clear()
         password.text.clear()
     }
 

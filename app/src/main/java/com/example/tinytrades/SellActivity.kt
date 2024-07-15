@@ -32,22 +32,23 @@ import java.io.ByteArrayOutputStream
 
 class SellActivity : AppCompatActivity() {
 
+    private lateinit var database: AppDatabase
     private lateinit var userDao: UserDao
     private lateinit var profileDao: ProfileDao
     private lateinit var itemDao: ItemDao
-    private lateinit var database: AppDatabase
 
     private lateinit var backbtn: ImageButton
     private lateinit var takepicture: Button
     private lateinit var gallery: Button
     private lateinit var save: Button
-    private lateinit var update: Button
+    private lateinit var delete: Button
 
     private lateinit var image: ImageView
     private lateinit var title: EditText
+    private lateinit var quantity: EditText
     private lateinit var username: EditText
     private lateinit var price: EditText
-    private lateinit var emaildId: EditText
+    private lateinit var emailId: EditText
     private lateinit var size: EditText
 
     private val REQUEST_IMAGE_CAPTURE = 1
@@ -63,7 +64,9 @@ class SellActivity : AppCompatActivity() {
             applicationContext,
             AppDatabase::class.java,
             "tinytrades-database"
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
 
         userDao = database.userDao()
         profileDao = database.profileDao()
@@ -73,17 +76,22 @@ class SellActivity : AppCompatActivity() {
         takepicture = findViewById(R.id.takepicture)
         gallery = findViewById(R.id.gallery)
         save = findViewById(R.id.save)
-        update = findViewById(R.id.update)
+        delete = findViewById(R.id.delete)
 
         image = findViewById(R.id.image)
         title = findViewById(R.id.title)
+        quantity = findViewById(R.id.quantity)
         username = findViewById(R.id.username)
         price = findViewById(R.id.price)
-        emaildId = findViewById(R.id.emailid)
+        emailId = findViewById(R.id.emailid)
         size = findViewById(R.id.size)
 
         backbtn.setOnClickListener {
             onBackPressed()
+        }
+
+        save.setOnClickListener {
+            saveItem()
         }
 
         takepicture.setOnClickListener {
@@ -104,14 +112,6 @@ class SellActivity : AppCompatActivity() {
             val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             startActivityForResult(intent, REQUEST_IMAGE_GALLERY)
         }
-
-        save.setOnClickListener {
-            saveItem()
-        }
-
-
-        update.setOnClickListener {}
-
     }
 
     private fun saveItem() {
@@ -126,80 +126,95 @@ class SellActivity : AppCompatActivity() {
         }
 
         val titleText = title.text.toString()
+        val quantityText = quantity.text.toString()
         val userName = username.text.toString()
         val priceText = price.text.toString()
-        val emailIdText = emaildId.text.toString()
+        val emailIdText = emailId.text.toString()
         val sizeText = size.text.toString()
 
-        if(itemSave(itemImage, titleText, userName, priceText, emailIdText, sizeText)) {
+        if (validateFields(itemImage, titleText, quantityText, userName, priceText, emailIdText, sizeText)) {
             lifecycleScope.launch {
-                val existingUser = withContext(Dispatchers.IO) {
-                    database.userDao().getUserByUsername(userName)
-                }
+                try {
+                    val existingUser = withContext(Dispatchers.IO) {
+                        database.userDao().getUserByUsername(userName)
+                    }
+                    val existingProfile = withContext(Dispatchers.IO) {
+                        database.profileDao().getProfileByEmailId(emailIdText)
+                    }
 
-                val existingProfile = withContext(Dispatchers.IO) {
-                    database.profileDao().getProfileByEmailId(emailIdText)
-                }
+                    if (existingUser != null && existingProfile != null) {
+                        val existingItem = withContext(Dispatchers.IO) {
+                            database.itemDao().getItemByTitle(titleText)
+                        }
 
-                val existingItem = withContext(Dispatchers.IO) {
-                    database.itemDao().getItemByTitle(titleText)
-                }
-
-                if(existingUser != null) {
-                    if(existingProfile != null) {
                         if (existingItem == null) {
+                            val newItem = Item(
+                                image = itemImage,
+                                title = titleText,
+                                quantity = quantityText.toInt(),
+                                username = userName,
+                                price = priceText.toDouble(),
+                                emailid = emailIdText,
+                                size = sizeText
+                            )
                             withContext(Dispatchers.IO) {
-                                val newItem = Item(image = itemImage,
-                                    title = titleText,
-                                    username = userName,
-                                    price = priceText.toDouble(),
-                                    emailid = emailIdText,
-                                    size = sizeText
-                                )
-                                itemDao.insert(newItem)
+                                database.itemDao().insert(newItem)
                             }
                             showToastMsg("Item added successfully")
+                            clearFields()
+                            finish()
+                        } else {
+                            showToastMsg("Item with title already exists")
                         }
-                        showToastMsg("profile not found")
+                    } else {
+                        showToastMsg("User or profile not found")
                     }
-                    showToastMsg("account not found")
+                } catch (e: Exception) {
+                    showToastMsg("Error: ${e.message}")
                 }
             }
         }
     }
 
-    private fun itemSave(itemImage: ByteArray?, titleText: String, userName: String, priceText: String, emailIdText: String, sizeText: String): Boolean {
+
+    private fun validateFields(
+        itemImage: ByteArray?,
+        titleText: String,
+        quantityText: String,
+        userName: String,
+        priceText: String,
+        emailIdText: String,
+        sizeText: String
+    ): Boolean {
         return when {
             itemImage == null -> {
-                showToastMsg("upload the image")
+                showToastMsg("Please upload an image")
                 false
             }
-
             titleText.isEmpty() -> {
-                showToastMsg("Fill the title field")
+                showToastMsg("Please fill the title field")
                 false
             }
-
+            quantityText.isEmpty() -> {
+                showToastMsg("Please fill the quantity field")
+                false
+            }
             userName.isEmpty() -> {
-                showToastMsg("Fill the username field")
+                showToastMsg("Please fill the username field")
                 false
             }
-
             priceText.isEmpty() -> {
-                showToastMsg("Fill the price field")
+                showToastMsg("Please fill the price field")
                 false
             }
-
             emailIdText.isEmpty() -> {
-                showToastMsg("Fill the email id field")
+                showToastMsg("Please fill the email id field")
                 false
             }
-
             sizeText.isEmpty() -> {
-                showToastMsg("Fill the size field")
+                showToastMsg("Please fill the size field")
                 false
             }
-
             else -> true
         }
     }
@@ -225,28 +240,11 @@ class SellActivity : AppCompatActivity() {
                 REQUEST_IMAGE_GALLERY -> {
                     val selectedImageUri: Uri? = data?.data
                     selectedImageUri?.let {
-                        val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, it)
+                        val bitmap =
+                            MediaStore.Images.Media.getBitmap(contentResolver, selectedImageUri)
                         image.setImageBitmap(bitmap)
                     }
                 }
-            }
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            REQUEST_CAMERA_PERMISSION -> {
-                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    dispatchTakePictureIntent()
-                } else {
-                    Toast.makeText(this, "Camera permission is required to take pictures", Toast.LENGTH_SHORT).show()
-                }
-                return
             }
         }
     }
@@ -256,16 +254,12 @@ class SellActivity : AppCompatActivity() {
     }
 
     private fun clearFields() {
-        image.setImageResource(0)
+        image.setImageDrawable(null)
         title.text.clear()
+        quantity.text.clear()
         username.text.clear()
         price.text.clear()
-        emaildId.text.clear()
+        emailId.text.clear()
         size.text.clear()
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        finish()
     }
 }

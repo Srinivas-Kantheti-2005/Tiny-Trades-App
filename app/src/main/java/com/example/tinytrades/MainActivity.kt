@@ -1,32 +1,74 @@
 package com.example.tinytrades
 
-import AdapterClass
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.room.Room
+import com.example.tinytrades.database.AppDatabase
+import com.example.tinytrades.database.Item
+import com.example.tinytrades.database.ItemDao
+import com.example.tinytrades.database.ProfileDao
+import com.example.tinytrades.database.UserDao
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), HomeRecyclerViewAdapter.OnItemClickListener {
 
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: AdapterClass
+    private lateinit var userDao: UserDao
+    private lateinit var profileDao: ProfileDao
+    private lateinit var itemDao: ItemDao
+    private lateinit var database: AppDatabase
+
     private lateinit var searchView: SearchView
+    private lateinit var recyclerView: RecyclerView
     private lateinit var explorebtn: ImageButton
-    private lateinit var profilebtn: ImageButton
     private lateinit var sellbtn: ImageButton
+    private lateinit var profilebtn: ImageButton
+
+    private lateinit var adapter: HomeRecyclerViewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Initialize views
+        database = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java,
+            "tinytrades-database"
+        )
+            .fallbackToDestructiveMigration()
+            .build()
+
+        userDao = database.userDao()
+        profileDao = database.profileDao()
+        itemDao = database.itemDao()
+
         searchView = findViewById(R.id.searchView)
+        recyclerView = findViewById(R.id.recyclerView)
+
         explorebtn = findViewById(R.id.explore)
-        profilebtn = findViewById(R.id.profile)
         sellbtn = findViewById(R.id.sell)
+        profilebtn = findViewById(R.id.profile)
+
+        // Initialize RecyclerView
+        recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        adapter = HomeRecyclerViewAdapter(mutableListOf(), this)
+        recyclerView.adapter = adapter
+
+        // Setup SearchView
+        searchView.queryHint = "Search Tiny Trades..."
+        setupSearchView()
+
+        explorebtn.setOnClickListener {
+            searchView.requestFocus()
+            searchView.isIconified = false
+        }
 
         // Set click listeners
         sellbtn.setOnClickListener {
@@ -39,20 +81,8 @@ class MainActivity : AppCompatActivity() {
             startActivity(profileIntent)
         }
 
-        // Initialize RecyclerView
-        recyclerView = findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        adapter = AdapterClass(DataManager.itemsList)
-        recyclerView.adapter = adapter
-
-        // Setup SearchView
-        searchView.queryHint = "Search Tiny Trades..."
-        setupSearchView()
-
-        explorebtn.setOnClickListener {
-            searchView.requestFocus()
-            searchView.isIconified = false
-        }
+        // Load items initially
+        loadItemsFromDatabase()
     }
 
     private fun setupSearchView() {
@@ -62,7 +92,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                val queryText = newText ?: ""
+                val queryText = newText.orEmpty().trim()
                 filterData(queryText)
                 return true
             }
@@ -70,10 +100,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun filterData(query: String) {
-        val filteredList = DataManager.itemsList.filter {
-            it.dataTitle.contains(query, ignoreCase = true)
+        GlobalScope.launch(Dispatchers.Main) {
+            val filteredItems = with(Dispatchers.IO) {
+                if (query.isEmpty()) {
+                    itemDao.getAllItems() // Fetch all items if query is empty
+                } else {
+                    itemDao.searchItems("%$query%") // Search items with the query in their title
+                }
+            }
+            adapter.updateItems(filteredItems)
         }
-        adapter.updateList(filteredList as ArrayList<DataClass>)
+    }
+
+    private fun loadItemsFromDatabase() {
+        GlobalScope.launch(Dispatchers.Main) {
+            val allItems = with(Dispatchers.IO) {
+                itemDao.getAllItems()
+            }
+            adapter.updateItems(allItems)
+        }
     }
 
     override fun onResume() {
@@ -93,5 +138,13 @@ class MainActivity : AppCompatActivity() {
     private fun navigateToExplore() {
         // Programmatically perform click on explore button
         explorebtn.performClick()
+    }
+
+    private fun showToastMsg(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onItemClick(item: Item) {
+
     }
 }

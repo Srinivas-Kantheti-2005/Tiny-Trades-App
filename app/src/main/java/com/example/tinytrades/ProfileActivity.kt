@@ -10,17 +10,20 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.room.Room
 import com.example.tinytrades.database.AppDatabase
+import com.example.tinytrades.database.ItemDao
 import com.example.tinytrades.database.Profile
 import com.example.tinytrades.database.ProfileDao
+import com.example.tinytrades.database.UserDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ProfileActivity : AppCompatActivity() {
 
+    private lateinit var userDao: UserDao
     private lateinit var profileDao: ProfileDao
+    private lateinit var itemDao: ItemDao
     private lateinit var database: AppDatabase
 
     private lateinit var backbtn: ImageButton
@@ -52,15 +55,10 @@ class ProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
-        database = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java,
-            "tinytrades-database"
-        )
-            .fallbackToDestructiveMigration()
-            .build()
-
+        database = AppDatabase.getDatabase(applicationContext)
+        userDao = database.userDao()
         profileDao = database.profileDao()
+        itemDao = database.itemDao()
 
         backbtn = findViewById(R.id.backbtn)
         homebtn = findViewById(R.id.home)
@@ -88,18 +86,7 @@ class ProfileActivity : AppCompatActivity() {
         profileImage = findViewById(R.id.profileimage)
 
         val usernameExtra = intent.getStringExtra("USERNAME") ?: ""
-
-        lifecycleScope.launch {
-            val profile = withContext(Dispatchers.IO) {
-                profileDao.getProfileByUsername(usernameExtra)
-            }
-
-            if (profile != null) {
-                populateFields(profile)
-            } else {
-                showToast("Profile not found")
-            }
-        }
+        loadProfile(usernameExtra)
 
         savebtn.setOnClickListener {
             saveProfile()
@@ -142,6 +129,17 @@ class ProfileActivity : AppCompatActivity() {
         homebtn.setOnClickListener {
             val homeIntent = Intent(this, MainActivity::class.java)
             startActivity(homeIntent)
+        }
+    }
+
+    private fun loadProfile(userName: String) {
+        lifecycleScope.launch {
+            val profile = withContext(Dispatchers.IO) {
+                profileDao.getProfileByUsername(userName)
+            }
+            if(profile != null) {
+                populateFields(profile)
+            }
         }
     }
 

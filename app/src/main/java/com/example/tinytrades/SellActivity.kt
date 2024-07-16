@@ -19,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.room.Room
 import com.example.tinytrades.database.AppDatabase
 import com.example.tinytrades.database.Item
 import com.example.tinytrades.database.ItemDao
@@ -60,14 +59,7 @@ class SellActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sell)
 
-        database = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java,
-            "tinytrades-database"
-        )
-            .fallbackToDestructiveMigration()
-            .build()
-
+        database = AppDatabase.getDatabase(applicationContext)
         userDao = database.userDao()
         profileDao = database.profileDao()
         itemDao = database.itemDao()

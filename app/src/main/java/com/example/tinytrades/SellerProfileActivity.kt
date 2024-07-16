@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
 import com.example.tinytrades.database.AppDatabase
 import com.example.tinytrades.database.ItemDao
 import com.example.tinytrades.database.Profile
@@ -39,14 +38,7 @@ class SellerProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_seller_profile)
 
-        database = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java,
-            "tinytrades-database"
-        )
-            .fallbackToDestructiveMigration()
-            .build()
-
+        database = AppDatabase.getDatabase(applicationContext)
         userDao = database.userDao()
         profileDao = database.profileDao()
         itemDao = database.itemDao()

@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import androidx.room.Room
 import com.example.tinytrades.database.AppDatabase
 import com.example.tinytrades.database.Item
 import com.example.tinytrades.database.ItemDao
@@ -37,14 +36,7 @@ class MainActivity : AppCompatActivity(), HomeRecyclerViewAdapter.OnItemClickLis
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        database = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java,
-            "tinytrades-database"
-        )
-            .fallbackToDestructiveMigration()
-            .build()
-
+        database = AppDatabase.getDatabase(applicationContext)
         userDao = database.userDao()
         profileDao = database.profileDao()
         itemDao = database.itemDao()
@@ -77,7 +69,10 @@ class MainActivity : AppCompatActivity(), HomeRecyclerViewAdapter.OnItemClickLis
         }
 
         profilebtn.setOnClickListener {
-            val profileIntent = Intent(this, ProfileActivity::class.java)
+            val username = "profile"
+            val profileIntent = Intent(this, ProfileActivity::class.java).apply {
+                putExtra("USERNAME", username)
+            }
             startActivity(profileIntent)
         }
 
@@ -145,6 +140,13 @@ class MainActivity : AppCompatActivity(), HomeRecyclerViewAdapter.OnItemClickLis
     }
 
     override fun onItemClick(item: Item) {
-
+        val intent = Intent(this, ItemDetailsActivity::class.java).apply {
+            putExtra("itemImage", item.image)
+            putExtra("itemTitle", item.title)
+            putExtra("itemSize", item.size)
+            putExtra("itemPrice", item.price)
+            putExtra("sellerUsername", item.username)
+        }
+        startActivity(intent)
     }
 }

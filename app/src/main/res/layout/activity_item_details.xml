@@ -75,8 +75,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/sellername"
-        android:text="@string/seller_name"
+        android:id="@+id/username"
+        android:text="@string/seller_username"
         android:textSize="16sp"
         android:textStyle="bold"
         android:textColor="@color/black"

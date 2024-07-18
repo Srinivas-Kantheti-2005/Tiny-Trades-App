@@ -12,15 +12,14 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.tinytrades.database.AppDatabase
 import com.example.tinytrades.database.ItemDao
 import com.example.tinytrades.database.ProfileDao
-import com.example.tinytrades.database.UserDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ItemDetailsActivity : AppCompatActivity() {
 
     private lateinit var database: AppDatabase
-    private lateinit var userDao: UserDao
     private lateinit var profileDao: ProfileDao
     private lateinit var itemDao: ItemDao
 
@@ -32,14 +31,14 @@ class ItemDetailsActivity : AppCompatActivity() {
     private lateinit var title: TextView
     private lateinit var size: TextView
     private lateinit var price: TextView
-    private lateinit var sellername: TextView
+    private lateinit var sellerName: TextView
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_item_details)
 
         database = AppDatabase.getDatabase(applicationContext)
-        userDao = database.userDao()
         profileDao = database.profileDao()
         itemDao = database.itemDao()
 
@@ -51,19 +50,19 @@ class ItemDetailsActivity : AppCompatActivity() {
         title = findViewById(R.id.itemTitle)
         size = findViewById(R.id.itemSize)
         price = findViewById(R.id.itemPrice)
-        sellername = findViewById(R.id.sellername)
+        sellerName = findViewById(R.id.username)
 
         backbtn.setOnClickListener {
             onBackPressed()
         }
 
         val bundle = intent.extras
-        if(bundle != null) {
+        if (bundle != null) {
             val itemImageResId = bundle.getByteArray("itemImage")
             val itemTitleText = bundle.getString("itemTitle", "")
             val itemSizeText = bundle.getString("itemSize", "")
             val itemPriceText = bundle.getDouble("itemPrice", 0.0)
-            val sellerUsername = bundle.getString("sellerUsername","")
+            val sellerUsername = bundle.getString("sellerUsername", "")
 
             itemImageResId?.let {
                 image.setImageBitmap(BitmapFactory.decodeByteArray(it, 0, it.size))
@@ -73,12 +72,12 @@ class ItemDetailsActivity : AppCompatActivity() {
             price.text = itemPriceText.toString()
 
             GlobalScope.launch(Dispatchers.Main) {
-                val profile = with(Dispatchers.IO) {
+                val profile = withContext(Dispatchers.IO) {
                     profileDao.getProfileByUsername(sellerUsername)
                 }
-                sellername.text = profile?.firstname ?: "Unknown Seller"
+                sellerName.text = profile?.firstname ?: "Unknown Seller"
 
-                sellername.setOnClickListener {
+                sellerName.setOnClickListener {
                     val profileIntent = Intent(this@ItemDetailsActivity, SellerProfileActivity::class.java).apply {
                         putExtra("USERNAME", sellerUsername)
                     }

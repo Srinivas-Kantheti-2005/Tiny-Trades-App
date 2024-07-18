@@ -40,7 +40,6 @@ class SellActivity : AppCompatActivity() {
     private lateinit var takepicture: Button
     private lateinit var gallery: Button
     private lateinit var save: Button
-    private lateinit var delete: Button
 
     private lateinit var image: ImageView
     private lateinit var title: EditText
@@ -68,7 +67,6 @@ class SellActivity : AppCompatActivity() {
         takepicture = findViewById(R.id.takepicture)
         gallery = findViewById(R.id.gallery)
         save = findViewById(R.id.save)
-        delete = findViewById(R.id.delete)
 
         image = findViewById(R.id.image)
         title = findViewById(R.id.title)
@@ -77,6 +75,13 @@ class SellActivity : AppCompatActivity() {
         price = findViewById(R.id.price)
         emailId = findViewById(R.id.emailid)
         size = findViewById(R.id.size)
+
+        val usernameIntent = intent.getStringExtra("USERNAME") ?: ""
+
+        if(usernameIntent.isNotEmpty()) {
+            username.setText(usernameIntent)
+            username.isEnabled = false
+        }
 
         backbtn.setOnClickListener {
             onBackPressed()
@@ -184,27 +189,27 @@ class SellActivity : AppCompatActivity() {
                 false
             }
             titleText.isEmpty() -> {
-                showToastMsg("Please fill the title field")
+                showToastMsg("Please fill the title")
                 false
             }
             quantityText.isEmpty() -> {
-                showToastMsg("Please fill the quantity field")
+                showToastMsg("Please fill the quantity")
                 false
             }
             userName.isEmpty() -> {
-                showToastMsg("Please fill the username field")
+                showToastMsg("Please fill the username")
                 false
             }
             priceText.isEmpty() -> {
-                showToastMsg("Please fill the price field")
+                showToastMsg("Please fill the price")
                 false
             }
             emailIdText.isEmpty() -> {
-                showToastMsg("Please fill the email id field")
+                showToastMsg("Please fill the email id")
                 false
             }
             sizeText.isEmpty() -> {
-                showToastMsg("Please fill the size field")
+                showToastMsg("Please fill the size")
                 false
             }
             else -> true

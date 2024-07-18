@@ -27,13 +27,13 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var database: AppDatabase
 
     private lateinit var backbtn: ImageButton
+    private lateinit var updatebtn: Button
+    private lateinit var itemsbtn: Button
     private lateinit var homebtn: ImageButton
     private lateinit var explorebtn: ImageButton
     private lateinit var sellbtn: ImageButton
-
     private lateinit var savebtn: Button
     private lateinit var deletebtn: Button
-    private lateinit var updatebtn: Button
     private lateinit var loginbtn: Button
     private lateinit var newaccountbtn: Button
 
@@ -50,7 +50,7 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var mandal: EditText
     private lateinit var district: EditText
     private lateinit var profileImage: ImageView
-
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
@@ -61,16 +61,15 @@ class ProfileActivity : AppCompatActivity() {
         itemDao = database.itemDao()
 
         backbtn = findViewById(R.id.backbtn)
+        updatebtn = findViewById(R.id.update)
+        itemsbtn = findViewById(R.id.items)
         homebtn = findViewById(R.id.home)
         explorebtn = findViewById(R.id.explore)
         sellbtn = findViewById(R.id.sell)
-
         savebtn = findViewById(R.id.save)
         deletebtn = findViewById(R.id.delete)
-        updatebtn = findViewById(R.id.update)
         loginbtn = findViewById(R.id.loginpbtn)
         newaccountbtn = findViewById(R.id.newaccount)
-
         username = findViewById(R.id.username)
         firstname = findViewById(R.id.firstname)
         lastname = findViewById(R.id.lastname)
@@ -86,46 +85,48 @@ class ProfileActivity : AppCompatActivity() {
         profileImage = findViewById(R.id.profileimage)
 
         val usernameExtra = intent.getStringExtra("USERNAME") ?: ""
+
+        lifecycleScope.launch {
+            val profile = withContext(Dispatchers.IO) {
+                profileDao.getProfileByUsername(usernameExtra)
+            }
+
+            if (profile != null) {
+                populateFields(profile)
+            }
+        }
         loadProfile(usernameExtra)
 
         savebtn.setOnClickListener {
             saveProfile()
         }
-
         deletebtn.setOnClickListener {
             deleteProfile()
         }
-
         updatebtn.setOnClickListener {
             updateProfile()
         }
-
         sellbtn.setOnClickListener {
             val sellIntent = Intent(this, SellActivity::class.java)
             startActivity(sellIntent)
         }
-
         backbtn.setOnClickListener {
             onBackPressed()
         }
-
         newaccountbtn.setOnClickListener {
             val createAccountIntent = Intent(this, CreateAccount::class.java)
             startActivity(createAccountIntent)
         }
-
         loginbtn.setOnClickListener {
             val loginIntent = Intent(this, LoginPage::class.java)
             startActivity(loginIntent)
         }
-
         explorebtn.setOnClickListener {
             val exploreIntent = Intent(this, MainActivity::class.java).apply {
                 putExtra("navigate_to", "explore")
             }
             startActivity(exploreIntent)
         }
-
         homebtn.setOnClickListener {
             val homeIntent = Intent(this, MainActivity::class.java)
             startActivity(homeIntent)
@@ -156,7 +157,6 @@ class ProfileActivity : AppCompatActivity() {
         pincode.setText(profile.pinCode.toString())
         mandal.setText(profile.mandal)
         district.setText(profile.district)
-
         val profileImageResource = if (profile.gender.equals("male", ignoreCase = true)) {
             R.drawable.men
         } else {
@@ -164,7 +164,6 @@ class ProfileActivity : AppCompatActivity() {
         }
         profileImage.setImageResource(profileImageResource)
     }
-
     private fun saveProfile() {
         val userName = username.text.toString()
         val firstName = firstname.text.toString()
@@ -178,19 +177,16 @@ class ProfileActivity : AppCompatActivity() {
         val pinCode = pincode.text.toString()
         val mandalText = mandal.text.toString()
         val districtText = district.text.toString()
-
-        if (isValidProfile(firstName, lastName, genderText, mobileNo, emailId, userName, dNo, streetText, villageText, pinCode, mandalText, districtText)) {
+        if (isValidProfile(userName, emailId, firstName, lastName, genderText, mobileNo, dNo, streetText, villageText, pinCode, mandalText, districtText)) {
             val profileImage = if (genderText.equals("male", ignoreCase = true)) {
                 R.drawable.men
             } else {
                 R.drawable.women
             }
-
             lifecycleScope.launch {
                 val existingProfile = withContext(Dispatchers.IO) {
                     profileDao.getProfileByUsername(userName)
                 }
-
                 if (existingProfile == null) {
                     val newProfile = Profile(
                         username = userName,
@@ -207,7 +203,6 @@ class ProfileActivity : AppCompatActivity() {
                         district = districtText,
                         image = profileImage
                     )
-
                     withContext(Dispatchers.IO) {
                         profileDao.insert(newProfile)
                     }
@@ -218,8 +213,6 @@ class ProfileActivity : AppCompatActivity() {
             }
         }
     }
-
-
     private fun deleteProfile() {
         val emailIdValue = emailid.text.toString()
         if (emailIdValue.isEmpty()) {
@@ -236,12 +229,9 @@ class ProfileActivity : AppCompatActivity() {
                 }
                 showToast("Profile deleted successfully")
                 clearFields()
-            } else {
-                showToast("Profile not found")
             }
         }
     }
-
     private fun updateProfile() {
         val userName = username.text.toString()
         val firstName = firstname.text.toString()
@@ -255,19 +245,16 @@ class ProfileActivity : AppCompatActivity() {
         val pinCode = pincode.text.toString()
         val mandalText = mandal.text.toString()
         val districtText = district.text.toString()
-
         if (isValidProfile(firstName, lastName, genderText, mobileNo, emailId, userName, dNo, streetText, villageText, pinCode, mandalText, districtText)) {
             val profileImage = if (genderText.equals("male", ignoreCase = true)) {
                 R.drawable.men
             } else {
                 R.drawable.women
             }
-
             lifecycleScope.launch {
                 val existingProfile = withContext(Dispatchers.IO) {
                     profileDao.getProfileByEmailId(emailId)
                 }
-
                 if (existingProfile == null) {
                     showToast("Profile not found")
                 } else {
@@ -286,7 +273,6 @@ class ProfileActivity : AppCompatActivity() {
                         district = districtText,
                         image = profileImage
                     )
-
                     withContext(Dispatchers.IO) {
                         profileDao.update(updatedProfile)
                     }
@@ -295,8 +281,7 @@ class ProfileActivity : AppCompatActivity() {
             }
         }
     }
-
-    private fun isValidProfile(
+    private fun  isValidProfile(
         firstName: String,
         lastName: String,
         gender: String,
@@ -311,6 +296,10 @@ class ProfileActivity : AppCompatActivity() {
         district: String
     ): Boolean {
         return when {
+            userName.isEmpty() -> {
+                showToast("Enter username")
+                false
+            }
             firstName.isEmpty() -> {
                 showToast("Enter first name")
                 false
@@ -323,6 +312,10 @@ class ProfileActivity : AppCompatActivity() {
                 showToast("Enter gender")
                 false
             }
+            gender.equals("male", ignoreCase = true) || gender.equals("female", ignoreCase = true) -> {
+                showToast("Gender must be male or female")
+                false
+            }
             mobileNo.isEmpty() -> {
                 showToast("Enter mobile number")
                 false
@@ -331,8 +324,8 @@ class ProfileActivity : AppCompatActivity() {
                 showToast("Enter email id")
                 false
             }
-            userName.isEmpty() -> {
-                showToast("Enter username")
+            emailId.contains("@gmail.com") -> {
+                showToast("Enter valid email id")
                 false
             }
             dNo.isEmpty() -> {
@@ -362,11 +355,9 @@ class ProfileActivity : AppCompatActivity() {
             else -> true
         }
     }
-
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
-
     private fun clearFields() {
         username.text.clear()
         firstname.text.clear()
@@ -381,7 +372,6 @@ class ProfileActivity : AppCompatActivity() {
         mandal.text.clear()
         district.text.clear()
     }
-
     @SuppressLint("MissingSuperCall")
     override fun onBackPressed() {
         finish()

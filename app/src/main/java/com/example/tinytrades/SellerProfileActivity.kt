@@ -14,22 +14,20 @@ import com.example.tinytrades.database.AppDatabase
 import com.example.tinytrades.database.ItemDao
 import com.example.tinytrades.database.Profile
 import com.example.tinytrades.database.ProfileDao
-import com.example.tinytrades.database.UserDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class SellerProfileActivity : AppCompatActivity() {
 
-    private lateinit var userDao: UserDao
     private lateinit var profileDao: ProfileDao
     private lateinit var itemDao: ItemDao
     private lateinit var database: AppDatabase
 
     private lateinit var backbtn: ImageButton
-    private lateinit var sellerimage: ImageView
-    private lateinit var sellername: TextView
-    private lateinit var sellerrecyclerview: RecyclerView
+    private lateinit var sellerImage: ImageView
+    private lateinit var sellerName: TextView
+    private lateinit var sellerRecyclerView: RecyclerView
 
     private lateinit var sellerRecyclerViewAdapter: SellerRecyclerViewAdapter
 
@@ -38,28 +36,33 @@ class SellerProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_seller_profile)
 
+        // Initialize the database and DAOs
         database = AppDatabase.getDatabase(applicationContext)
-        userDao = database.userDao()
         profileDao = database.profileDao()
         itemDao = database.itemDao()
 
+        // Initialize UI components
         backbtn = findViewById(R.id.backbtn)
-        sellerimage = findViewById(R.id.sellerImage)
-        sellername = findViewById(R.id.sellername)
-        sellerrecyclerview = findViewById(R.id.sellerRecyclerView)
+        sellerImage = findViewById(R.id.sellerImage)
+        sellerName = findViewById(R.id.sellername)
+        sellerRecyclerView = findViewById(R.id.sellerRecyclerView)
 
+        // Retrieve the username from the intent
+        val username = intent.getStringExtra("USERNAME") ?: ""
+
+        // Set up the RecyclerView
+        sellerRecyclerViewAdapter = SellerRecyclerViewAdapter(mutableListOf())
+        sellerRecyclerView.adapter = sellerRecyclerViewAdapter
+        sellerRecyclerView.layoutManager = GridLayoutManager(this, 3)
+
+        // Load the seller profile and items
+        loadSellerProfile(username)
+        loadSellerItems(username)
+
+        // Set the back button click listener
         backbtn.setOnClickListener {
             onBackPressed()
         }
-
-        sellerRecyclerViewAdapter = SellerRecyclerViewAdapter(mutableListOf())
-        sellerrecyclerview.adapter = sellerRecyclerViewAdapter
-        sellerrecyclerview.layoutManager = GridLayoutManager(this, 3)
-
-        // Retrieve username passed from LoginPage
-        val username = intent.getStringExtra("USERNAME") ?: ""
-        loadSellerProfile(username)
-        loadSellerItems(username)
     }
 
     private fun loadSellerProfile(username: String) {
@@ -80,10 +83,8 @@ class SellerProfileActivity : AppCompatActivity() {
     }
 
     private fun populateSellerProfile(profile: Profile) {
-        // Set seller image based on profile image field
-        sellerimage.setImageResource(profile.image)
-        // Set seller name
-        sellername.text = "${profile.firstname} ${profile.lastname}"
+        sellerImage.setImageResource(profile.image)
+        sellerName.text = "${profile.firstname} ${profile.lastname}"
     }
 
     private fun loadSellerItems(username: String) {

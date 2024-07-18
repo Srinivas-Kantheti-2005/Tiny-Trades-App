@@ -1,5 +1,6 @@
 package com.example.tinytrades
 
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
@@ -30,6 +31,18 @@ class SellerRecyclerViewAdapter(private var items: MutableList<Item>) : Recycler
         holder.itemPrice.text = item.price.toString()
         item.image?.let {
             holder.itemImage.setImageBitmap(BitmapFactory.decodeByteArray(it, 0, it.size))
+        }
+
+        holder.itemView.setOnClickListener {
+            val context = holder.itemView.context
+            val intent = Intent(context, ItemDetailsActivity::class.java).apply {
+                putExtra("itemImage", item.image)
+                putExtra("itemTitle", item.title)
+                putExtra("itemSize", item.size)
+                putExtra("itemPrice", item.price)
+                putExtra("sellerUsername", item.username)
+            }
+            context.startActivity(intent)
         }
     }
 

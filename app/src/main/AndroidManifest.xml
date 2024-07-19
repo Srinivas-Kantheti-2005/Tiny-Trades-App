@@ -8,6 +8,7 @@
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -20,6 +21,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TinyTrades"
         tools:targetApi="31">
+        <activity
+            android:name=".SellerItemDetailsPage"
+            android:exported="false" />
+        <activity
+            android:name=".SellerItemPageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SellerItemDetailedPage"
+            android:exported="false" />
         <activity
             android:name=".SellerItemsPage"
             android:exported="false" />

@@ -53,7 +53,8 @@
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         app:layout_constraintTop_toBottomOf="@id/Profile"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="@id/firstname"
+        app:layout_constraintEnd_toEndOf="@id/firstname"/>
 
     <EditText
         android:layout_width="wrap_content"
@@ -373,7 +374,7 @@
     <Button
         android:layout_width="150dp"
         android:layout_height="45dp"
-        android:id="@+id/loginpbtn"
+        android:id="@+id/loginbtn"
         android:text="@string/login_profile"
         android:textSize="20sp"
         android:textStyle="normal"

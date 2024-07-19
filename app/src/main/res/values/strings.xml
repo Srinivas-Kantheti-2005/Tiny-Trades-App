@@ -63,4 +63,5 @@
     <string name="quantity">Quantity</string>
     <string name="items">ITEMS</string>
     <string name="seller_username">Seller Username</string>
+    <string name="upload_from_pc">UPLOAD FROM PC</string>
 </resources>

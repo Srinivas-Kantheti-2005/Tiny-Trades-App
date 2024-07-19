@@ -68,7 +68,7 @@ class ProfileActivity : AppCompatActivity() {
         sellbtn = findViewById(R.id.sell)
         savebtn = findViewById(R.id.save)
         deletebtn = findViewById(R.id.delete)
-        loginbtn = findViewById(R.id.loginpbtn)
+        loginbtn = findViewById(R.id.loginbtn)
         newaccountbtn = findViewById(R.id.newaccount)
         username = findViewById(R.id.username)
         firstname = findViewById(R.id.firstname)
@@ -91,11 +91,16 @@ class ProfileActivity : AppCompatActivity() {
                 profileDao.getProfileByUsername(usernameExtra)
             }
 
-            if (profile != null) {
-                populateFields(profile)
-            }
+            profile?.let { populateFields(it) }
         }
-        loadProfile(usernameExtra)
+
+        itemsbtn.setOnClickListener {
+            val userName = username.text.toString()
+            val itemsIntent = Intent(this, SellerItemPageActivity::class.java).apply {
+                putExtra("USERNAME", userName)
+            }
+            startActivity(itemsIntent)
+        }
 
         savebtn.setOnClickListener {
             saveProfile()

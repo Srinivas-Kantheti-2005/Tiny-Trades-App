@@ -6,6 +6,8 @@ import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.tinytrades.database.AppDatabase
@@ -14,8 +16,8 @@ import com.example.tinytrades.database.ItemDao
 import com.example.tinytrades.database.ProfileDao
 import com.example.tinytrades.database.UserDao
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity(), HomeRecyclerViewAdapter.OnItemClickListener {
 
@@ -43,7 +45,6 @@ class MainActivity : AppCompatActivity(), HomeRecyclerViewAdapter.OnItemClickLis
 
         searchView = findViewById(R.id.searchView)
         recyclerView = findViewById(R.id.recyclerView)
-
         explorebtn = findViewById(R.id.explore)
         sellbtn = findViewById(R.id.sell)
         profilebtn = findViewById(R.id.profile)
@@ -62,7 +63,6 @@ class MainActivity : AppCompatActivity(), HomeRecyclerViewAdapter.OnItemClickLis
             searchView.isIconified = false
         }
 
-        // Set click listeners
         sellbtn.setOnClickListener {
             val sellIntent = Intent(this, SellActivity::class.java)
             startActivity(sellIntent)
@@ -76,8 +76,8 @@ class MainActivity : AppCompatActivity(), HomeRecyclerViewAdapter.OnItemClickLis
             startActivity(profileIntent)
         }
 
-        // Load items initially
-        loadItemsFromDatabase()
+        // Observe items from database
+        observeItemsFromDatabase()
     }
 
     private fun setupSearchView() {
@@ -95,35 +95,34 @@ class MainActivity : AppCompatActivity(), HomeRecyclerViewAdapter.OnItemClickLis
     }
 
     private fun filterData(query: String) {
-        GlobalScope.launch(Dispatchers.Main) {
-            val filteredItems = with(Dispatchers.IO) {
-                if (query.isEmpty()) {
-                    itemDao.getAllItems() // Fetch all items if query is empty
-                } else {
-                    itemDao.searchItems("%$query%") // Search items with the query in their title
+        lifecycleScope.launch {
+            try {
+                val filteredItems = withContext(Dispatchers.IO) {
+                    if (query.isEmpty()) {
+                        itemDao.getAllItems() // Fetch all items if query is empty
+                    } else {
+                        itemDao.searchItems("%$query%") // Search items with the query in their title
+                    }
                 }
+                adapter.updateItems(filteredItems)
+            } catch (e: Exception) {
+                showToastMsg("Failed to fetch items: ${e.message}")
             }
-            adapter.updateItems(filteredItems)
         }
     }
 
-    private fun loadItemsFromDatabase() {
-        GlobalScope.launch(Dispatchers.Main) {
-            val allItems = with(Dispatchers.IO) {
-                itemDao.getAllItems()
-            }
-            adapter.updateItems(allItems)
-        }
+    private fun observeItemsFromDatabase() {
+        itemDao.getAllItemsLive().observe(this, Observer { items ->
+            adapter.updateItems(items)
+        })
     }
 
     override fun onResume() {
         super.onResume()
-        // Handle any intent passed to MainActivity
         handleIntent(intent)
     }
 
     private fun handleIntent(intent: Intent) {
-        // Check if intent has extra "navigate_to" and handle accordingly
         val navigateTo = intent.getStringExtra("navigate_to")
         if (navigateTo == "explore") {
             navigateToExplore()
@@ -131,7 +130,6 @@ class MainActivity : AppCompatActivity(), HomeRecyclerViewAdapter.OnItemClickLis
     }
 
     private fun navigateToExplore() {
-        // Programmatically perform click on explore button
         explorebtn.performClick()
     }
 

@@ -52,6 +52,7 @@ class SellActivity : AppCompatActivity() {
     private val REQUEST_IMAGE_CAPTURE = 1
     private val REQUEST_CAMERA_PERMISSION = 2
     private val REQUEST_IMAGE_GALLERY = 3
+    private val REQUEST_READ_EXTERNAL_STORAGE = 4
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,9 +77,11 @@ class SellActivity : AppCompatActivity() {
         emailId = findViewById(R.id.emailid)
         size = findViewById(R.id.size)
 
+        requestStoragePermission()
+
         val usernameIntent = intent.getStringExtra("USERNAME") ?: ""
 
-        if(usernameIntent.isNotEmpty()) {
+        if (usernameIntent.isNotEmpty()) {
             username.setText(usernameIntent)
             username.isEnabled = false
         }
@@ -87,13 +90,11 @@ class SellActivity : AppCompatActivity() {
             onBackPressed()
         }
 
-        save.setOnClickListener {
-            saveItem()
-        }
-
         takepicture.setOnClickListener {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.CAMERA
+                ) != PackageManager.PERMISSION_GRANTED
             ) {
                 ActivityCompat.requestPermissions(
                     this,
@@ -108,6 +109,19 @@ class SellActivity : AppCompatActivity() {
         gallery.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             startActivityForResult(intent, REQUEST_IMAGE_GALLERY)
+        }
+
+        save.setOnClickListener {
+            saveItem()
+        }
+    }
+
+    private fun requestStoragePermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                REQUEST_READ_EXTERNAL_STORAGE)
         }
     }
 
@@ -129,19 +143,28 @@ class SellActivity : AppCompatActivity() {
         val emailIdText = emailId.text.toString()
         val sizeText = size.text.toString()
 
-        if (validateFields(itemImage, titleText, quantityText, userName, priceText, emailIdText, sizeText)) {
+        if (validateFields(
+                itemImage,
+                titleText,
+                quantityText,
+                userName,
+                priceText,
+                emailIdText,
+                sizeText
+            )
+        ) {
             lifecycleScope.launch {
                 try {
                     val existingUser = withContext(Dispatchers.IO) {
-                        database.userDao().getUserByUsername(userName)
+                        userDao.getUserByUsername(userName)
                     }
                     val existingProfile = withContext(Dispatchers.IO) {
-                        database.profileDao().getProfileByEmailId(emailIdText)
+                        profileDao.getProfileByEmailId(emailIdText)
                     }
 
                     if (existingUser != null && existingProfile != null) {
                         val existingItem = withContext(Dispatchers.IO) {
-                            database.itemDao().getItemByTitle(titleText)
+                            itemDao.getItemByTitle(titleText)
                         }
 
                         if (existingItem == null) {
@@ -155,13 +178,11 @@ class SellActivity : AppCompatActivity() {
                                 size = sizeText
                             )
                             withContext(Dispatchers.IO) {
-                                database.itemDao().insert(newItem)
+                                itemDao.insert(newItem)
                             }
                             showToastMsg("Item added successfully")
                             clearFields()
                             finish()
-                        } else {
-                            showToastMsg("Item with title already exists")
                         }
                     } else {
                         showToastMsg("User or profile not found")
@@ -172,7 +193,6 @@ class SellActivity : AppCompatActivity() {
             }
         }
     }
-
 
     private fun validateFields(
         itemImage: ByteArray?,
@@ -231,15 +251,18 @@ class SellActivity : AppCompatActivity() {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 REQUEST_IMAGE_CAPTURE -> {
-                    val imageBitmap = data?.extras?.get("data") as Bitmap
-                    image.setImageBitmap(imageBitmap)
+                    val imageBitmap = data?.extras?.get("data") as? Bitmap
+                    imageBitmap?.let {
+                        image.setImageBitmap(it)
+                    }
                 }
                 REQUEST_IMAGE_GALLERY -> {
                     val selectedImageUri: Uri? = data?.data
                     selectedImageUri?.let {
-                        val bitmap =
-                            MediaStore.Images.Media.getBitmap(contentResolver, selectedImageUri)
+                        val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, it)
                         image.setImageBitmap(bitmap)
+                    } ?: run {
+                        showToastMsg("Failed to get image from gallery")
                     }
                 }
             }

@@ -3,13 +3,13 @@ package com.example.tinytrades
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.room.Room
 import com.example.tinytrades.database.AppDatabase
 import com.example.tinytrades.database.ItemDao
 import com.example.tinytrades.database.ProfileDao
@@ -37,14 +37,7 @@ class LoginPage : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login_page)
 
-        database = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java,
-            "tinytrades-database"
-        )
-            .fallbackToDestructiveMigration()
-            .build()
-
+        database = AppDatabase.getDatabase(applicationContext)
         userDao = database.userDao()
         profileDao = database.profileDao()
         itemDao = database.itemDao()
@@ -65,6 +58,7 @@ class LoginPage : AppCompatActivity() {
 
         loginbtn.setOnClickListener {
             login()
+            Log.d("ProfileActivity", "Username: $username")
         }
     }
 
@@ -77,7 +71,7 @@ class LoginPage : AppCompatActivity() {
         val emaiLID = emailID.text.toString()
         val passWord = password.text.toString()
 
-        if (isValidCredentials(userName, passWord)) {
+        if (isValidCredentials(userName, emaiLID, passWord)) {
             lifecycleScope.launch {
                 val user = withContext(Dispatchers.IO) {
                     userDao.getUserByUsername(userName)
@@ -108,10 +102,14 @@ class LoginPage : AppCompatActivity() {
         }
     }
 
-    private fun isValidCredentials(userName: String, passWord: String): Boolean {
+    private fun isValidCredentials(userName: String, emaiLID: String, passWord: String): Boolean {
         return when {
             userName.isEmpty() -> {
                 showToast("Enter username")
+                false
+            }
+            emaiLID.isEmpty() -> {
+                showToast("Enter email id")
                 false
             }
             passWord.isEmpty() -> {

@@ -1,6 +1,7 @@
 package com.example.tinytrades
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -14,48 +15,52 @@ import com.example.tinytrades.database.AppDatabase
 import com.example.tinytrades.database.ItemDao
 import com.example.tinytrades.database.Profile
 import com.example.tinytrades.database.ProfileDao
+import com.example.tinytrades.database.UserDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class SellerProfileActivity : AppCompatActivity() {
+class SellerItemPageActivity : AppCompatActivity() {
 
+    private lateinit var database: AppDatabase
+    private lateinit var userDao: UserDao
     private lateinit var profileDao: ProfileDao
     private lateinit var itemDao: ItemDao
-    private lateinit var database: AppDatabase
 
     private lateinit var backbtn: ImageButton
     private lateinit var sellerImage: ImageView
     private lateinit var sellerName: TextView
-    private lateinit var sellerRecyclerView: RecyclerView
+    private lateinit var sellerItemPageRecyclerView: RecyclerView
 
-    private lateinit var sellerRecyclerViewAdapter: SellerRecyclerViewAdapter
+    private lateinit var sellerItemPageRecyclerViewAdapter: SellerItemPageRecyclerViewAdapter
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_seller_profile)
+        setContentView(R.layout.activity_seller_item_page)
+
+        val username = intent.getStringExtra("USERNAME") ?: ""
 
         database = AppDatabase.getDatabase(applicationContext)
+        userDao = database.userDao()
         profileDao = database.profileDao()
         itemDao = database.itemDao()
 
         backbtn = findViewById(R.id.backbtn)
         sellerImage = findViewById(R.id.sellerImage)
         sellerName = findViewById(R.id.sellername)
-        sellerRecyclerView = findViewById(R.id.sellerRecyclerView)
+        sellerItemPageRecyclerView = findViewById(R.id.sellerItemPageRecyclerView)
 
-        val username = intent.getStringExtra("USERNAME") ?: ""
-
-        sellerRecyclerViewAdapter = SellerRecyclerViewAdapter(mutableListOf())
-        sellerRecyclerView.adapter = sellerRecyclerViewAdapter
-        sellerRecyclerView.layoutManager = GridLayoutManager(this, 3)
+        sellerItemPageRecyclerViewAdapter = SellerItemPageRecyclerViewAdapter(mutableListOf())
+        sellerItemPageRecyclerView.adapter = sellerItemPageRecyclerViewAdapter
+        sellerItemPageRecyclerView.layoutManager = GridLayoutManager(this, 3)
 
         loadSellerProfile(username)
         loadSellerItems(username)
 
         backbtn.setOnClickListener {
-            onBackPressed()
+            val backIntent = Intent(this, ProfileActivity::class.java)
+            startActivity(backIntent)
         }
     }
 
@@ -65,8 +70,8 @@ class SellerProfileActivity : AppCompatActivity() {
                 val profile = withContext(Dispatchers.IO) {
                     profileDao.getProfileByUsername(username)
                 }
-                if (profile != null) {
-                    populateSellerProfile(profile)
+                if(profile != null) {
+                    populatedSellerProfile(profile)
                 } else {
                     showToast("Profile not found")
                 }
@@ -76,30 +81,25 @@ class SellerProfileActivity : AppCompatActivity() {
         }
     }
 
-    private fun populateSellerProfile(profile: Profile) {
-        sellerImage.setImageResource(profile.image)
-        sellerName.text = "${profile.firstname} ${profile.lastname}"
-    }
-
     private fun loadSellerItems(username: String) {
         lifecycleScope.launch {
             try {
                 val sellerItems = withContext(Dispatchers.IO) {
-                    itemDao.getItemsBySeller(username)
+                    itemDao.getItemByUsername(username)
                 }
-                sellerRecyclerViewAdapter.updateItems(sellerItems)
+                sellerItemPageRecyclerViewAdapter.updateItems(sellerItems)
             } catch (e: Exception) {
                 showToast("Error loading items: ${e.message}")
             }
         }
     }
 
-    private fun showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    private fun populatedSellerProfile(profile: Profile) {
+        sellerImage.setImageResource(profile.image)
+        sellerName.text = "${profile.firstname} ${profile.lastname}"
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        finish()
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }

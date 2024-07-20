@@ -15,20 +15,26 @@ interface ItemDao {
     @Query("SELECT * FROM item")
     fun getAllItemsLive(): LiveData<List<Item>>
 
-    @Query("select * from item")
+    @Query("SELECT * FROM item")
     suspend fun getAllItems(): List<Item>
 
     @Query("SELECT * FROM item WHERE title LIKE :query")
-    fun searchItems(query: String): List<Item>
+    suspend fun searchItems(query: String): List<Item>
 
-    @Query("SELECT * FROM item WHERE username = :username")
-    suspend fun getItemsBySeller(username: String): List<Item>
+    @Query("SELECT * FROM item WHERE title = :title LIMIT 1")
+    suspend fun getItemByTitle(title: String): Item?
 
     @Query("select * from item where username = :username")
     suspend fun getItemByUsername(username: String): List<Item>
 
-    @Query("SELECT * FROM item WHERE title = :title LIMIT 1")
-    suspend fun getItemByTitle(title: String): Item?
+    @Query("select * from item where username = :username")
+    suspend fun getItemsBySeller(username: String): List<Item>
+
+    @Query("select * from item where username = :userName")
+    suspend fun getUserByUsername(userName: String): Item?
+
+    @Query("select * from item where emailid = :emailIdText")
+    suspend fun getProfileByEmailId(emailIdText: String): Item?
 
     @Update
     suspend fun update(item: Item)

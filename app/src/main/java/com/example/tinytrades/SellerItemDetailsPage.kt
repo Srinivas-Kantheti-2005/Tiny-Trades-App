@@ -19,8 +19,6 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.tinytrades.database.AppDatabase
 import com.example.tinytrades.database.ItemDao
-import com.example.tinytrades.database.ProfileDao
-import com.example.tinytrades.database.UserDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -29,8 +27,6 @@ import java.io.ByteArrayOutputStream
 class SellerItemDetailsPage : AppCompatActivity() {
 
     private lateinit var database: AppDatabase
-    private lateinit var userDao: UserDao
-    private lateinit var profileDao: ProfileDao
     private lateinit var itemDao: ItemDao
 
     private lateinit var backbtn: ImageButton
@@ -58,8 +54,6 @@ class SellerItemDetailsPage : AppCompatActivity() {
         val usernameExtra = intent.getStringExtra("USERNAME") ?: ""
 
         database = AppDatabase.getDatabase(applicationContext)
-        userDao = database.userDao()
-        profileDao = database.profileDao()
         itemDao = database.itemDao()
 
         backbtn = findViewById(R.id.backbtn)
@@ -176,17 +170,11 @@ class SellerItemDetailsPage : AppCompatActivity() {
 
         if (isValidItem(image, title, quantity, username, price, email, size)) {
             lifecycleScope.launch {
-                val existingUser = withContext(Dispatchers.IO) {
-                    userDao.getUserByUsername(username)
-                }
-                val existingProfile = withContext(Dispatchers.IO) {
-                    profileDao.getProfileByEmailId(email)
-                }
                 val existingItem = withContext(Dispatchers.IO) {
                     itemDao.getItemByTitle(title)
                 }
 
-                if (existingUser != null && existingProfile != null && existingItem != null) {
+                if (existingItem != null) {
                     val updatedItem = existingItem.copy(
                         image = image,
                         title = title,
@@ -208,16 +196,15 @@ class SellerItemDetailsPage : AppCompatActivity() {
         }
     }
 
-
     private fun deleteItem() {
         val title = itemTitle.text.toString()
         lifecycleScope.launch {
-            val existingTitle = withContext(Dispatchers.IO) {
+            val existingItem = withContext(Dispatchers.IO) {
                 itemDao.getItemByTitle(title)
             }
-            if (existingTitle != null) {
+            if (existingItem != null) {
                 withContext(Dispatchers.IO) {
-                    itemDao.delete(existingTitle)
+                    itemDao.delete(existingItem)
                     clearFields()
                 }
                 showToast("Item deleted successfully")

@@ -47,8 +47,7 @@ class LoginPage : AppCompatActivity() {
         loginbtn = findViewById(R.id.loginbtn)
 
         backbtn.setOnClickListener {
-            val backbtn = Intent(this, ProfileActivity::class.java)
-            startActivity(backbtn)
+            onBackPressed()
         }
 
         forgotpasswordbtn.setOnClickListener {

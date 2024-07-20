@@ -184,6 +184,9 @@ class SellActivity : AppCompatActivity() {
                             clearFields()
                             finish()
                         }
+                        else {
+                            showToastMsg("Item with same title exist")
+                        }
                     } else {
                         showToastMsg("User or profile not found")
                     }

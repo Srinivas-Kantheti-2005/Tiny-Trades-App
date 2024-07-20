@@ -173,7 +173,7 @@ class ProfileActivity : AppCompatActivity() {
         val userName = username.text.toString()
         val firstName = firstname.text.toString()
         val lastName = lastname.text.toString()
-        val genderText = gender.text.toString()
+        val genderText = gender.text.toString().trim()
         val mobileNo = mobileno.text.toString()
         val emailId = emailid.text.toString()
         val dNo = dno.text.toString()
@@ -241,7 +241,7 @@ class ProfileActivity : AppCompatActivity() {
         val userName = username.text.toString()
         val firstName = firstname.text.toString()
         val lastName = lastname.text.toString()
-        val genderText = gender.text.toString()
+        val genderText = gender.text.toString().trim()
         val mobileNo = mobileno.text.toString()
         val emailId = emailid.text.toString()
         val dNo = dno.text.toString()
@@ -329,7 +329,7 @@ class ProfileActivity : AppCompatActivity() {
                 showToast("Enter email id")
                 false
             }
-            emailId.contains("@gmail.com") -> {
+            emailId.contains("@") -> {
                 showToast("Enter valid email id")
                 false
             }

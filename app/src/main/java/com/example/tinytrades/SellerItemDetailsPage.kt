@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.Button
@@ -15,10 +16,14 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.tinytrades.database.AppDatabase
 import com.example.tinytrades.database.ItemDao
 import com.example.tinytrades.database.ProfileDao
 import com.example.tinytrades.database.UserDao
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 
 class SellerItemDetailsPage : AppCompatActivity() {
@@ -72,10 +77,7 @@ class SellerItemDetailsPage : AppCompatActivity() {
         itemSize = findViewById(R.id.size)
 
         backbtn.setOnClickListener {
-            val backIntent = Intent(this, SellerItemPageActivity::class.java).apply {
-                putExtra("USERNAME", usernameExtra)
-            }
-            startActivity(backIntent)
+            onBackPressed()
         }
 
         takePicture.setOnClickListener {
@@ -163,11 +165,108 @@ class SellerItemDetailsPage : AppCompatActivity() {
     }
 
     private fun updateItem() {
-        // Implement update functionality here
+        val imageBitmap = (itemImage.drawable as? BitmapDrawable)?.bitmap
+        val image = imageBitmap?.let { convertBitmapToByteArray(it) }
+        val title = itemTitle.text.toString()
+        val quantity = itemQuantity.text.toString()
+        val username = itemUsername.text.toString()
+        val price = itemPrice.text.toString()
+        val email = emailId.text.toString()
+        val size = itemSize.text.toString()
+
+        if (isValidItem(image, title, quantity, username, price, email, size)) {
+            lifecycleScope.launch {
+                val existingUser = withContext(Dispatchers.IO) {
+                    userDao.getUserByUsername(username)
+                }
+                val existingProfile = withContext(Dispatchers.IO) {
+                    profileDao.getProfileByEmailId(email)
+                }
+                val existingItem = withContext(Dispatchers.IO) {
+                    itemDao.getItemByTitle(title)
+                }
+
+                if (existingUser != null && existingProfile != null && existingItem != null) {
+                    val updatedItem = existingItem.copy(
+                        image = image,
+                        title = title,
+                        quantity = quantity.toInt(),
+                        username = username,
+                        price = price.toDouble(),
+                        emailid = email,
+                        size = size
+                    )
+                    withContext(Dispatchers.IO) {
+                        itemDao.update(updatedItem)
+                        clearFields()
+                    }
+                    showToast("Item updated successfully")
+                } else {
+                    showToast("Item not found")
+                }
+            }
+        }
     }
 
+
     private fun deleteItem() {
-        // Implement delete functionality here
+        val title = itemTitle.text.toString()
+        lifecycleScope.launch {
+            val existingTitle = withContext(Dispatchers.IO) {
+                itemDao.getItemByTitle(title)
+            }
+            if (existingTitle != null) {
+                withContext(Dispatchers.IO) {
+                    itemDao.delete(existingTitle)
+                    clearFields()
+                }
+                showToast("Item deleted successfully")
+            } else {
+                showToast("Item not found")
+            }
+        }
+    }
+
+    private fun isValidItem(
+        image: ByteArray?,
+        title: String,
+        quantity: String,
+        username: String,
+        price: String,
+        email: String,
+        size: String
+    ): Boolean {
+        return when {
+            image == null -> {
+                showToast("Image is missing")
+                false
+            }
+            title.isEmpty() -> {
+                showToast("Fill the title")
+                false
+            }
+            quantity.isEmpty() -> {
+                showToast("Fill the quantity")
+                false
+            }
+            username.isEmpty() -> {
+                showToast("Fill the username")
+                false
+            }
+            price.isEmpty() -> {
+                showToast("Fill the price")
+                false
+            }
+            email.isEmpty() -> {
+                showToast("Fill the email id")
+                false
+            }
+            size.isEmpty() -> {
+                showToast("Fill the size")
+                false
+            }
+            else -> true
+        }
     }
 
     private fun convertBitmapToByteArray(bitmap: Bitmap): ByteArray {
@@ -178,5 +277,20 @@ class SellerItemDetailsPage : AppCompatActivity() {
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun clearFields() {
+        itemImage.setImageDrawable(null)
+        itemTitle.text.clear()
+        itemQuantity.text.clear()
+        itemUsername.text.clear()
+        itemPrice.text.clear()
+        emailId.text.clear()
+        itemSize.text.clear()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
     }
 }

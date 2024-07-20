@@ -1,7 +1,6 @@
 package com.example.tinytrades
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -59,8 +58,7 @@ class SellerItemPageActivity : AppCompatActivity() {
         loadSellerItems(username)
 
         backbtn.setOnClickListener {
-            val backIntent = Intent(this, ProfileActivity::class.java)
-            startActivity(backIntent)
+            onBackPressed()
         }
     }
 
@@ -101,5 +99,10 @@ class SellerItemPageActivity : AppCompatActivity() {
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
     }
 }

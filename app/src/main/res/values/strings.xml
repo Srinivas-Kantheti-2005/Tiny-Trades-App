@@ -64,4 +64,9 @@
     <string name="items">ITEMS</string>
     <string name="seller_username">Seller Username</string>
     <string name="upload_from_pc">UPLOAD FROM PC</string>
+    <string name="decrement">Decrement</string>
+    <string name="increment">Increment</string>
+    <string name="buyer_item_quantity">1</string>
+    <string name="buyer_image">Buyer image</string>
+    <string name="buyer_name">Buyer Name</string>
 </resources>

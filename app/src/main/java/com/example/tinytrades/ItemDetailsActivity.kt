@@ -56,6 +56,12 @@ class ItemDetailsActivity : AppCompatActivity() {
             onBackPressed()
         }
 
+        addtocartbtn.setOnClickListener {
+            val cart = Intent(this, AddToCart::class.java).apply {
+            }
+            startActivity(cart)
+        }
+
         val bundle = intent.extras
         if (bundle != null) {
             val itemImageResId = bundle.getByteArray("itemImage")

@@ -3,6 +3,7 @@ package com.example.tinytrades
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -28,6 +29,9 @@ class MainActivity : AppCompatActivity(), HomeRecyclerViewAdapter.OnItemClickLis
 
     private lateinit var searchView: SearchView
     private lateinit var recyclerView: RecyclerView
+
+    private lateinit var add_to_cart: ImageButton
+    private lateinit var userName: TextView
     private lateinit var explorebtn: ImageButton
     private lateinit var sellbtn: ImageButton
     private lateinit var profilebtn: ImageButton
@@ -38,6 +42,8 @@ class MainActivity : AppCompatActivity(), HomeRecyclerViewAdapter.OnItemClickLis
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val username = intent.getStringExtra("USERNAME") ?: ""
+
         database = AppDatabase.getDatabase(applicationContext)
         userDao = database.userDao()
         profileDao = database.profileDao()
@@ -45,18 +51,28 @@ class MainActivity : AppCompatActivity(), HomeRecyclerViewAdapter.OnItemClickLis
 
         searchView = findViewById(R.id.searchView)
         recyclerView = findViewById(R.id.recyclerView)
+
+        add_to_cart = findViewById(R.id.add_to_cart)
+        userName = findViewById(R.id.username)
         explorebtn = findViewById(R.id.explore)
         sellbtn = findViewById(R.id.sell)
         profilebtn = findViewById(R.id.profile)
 
-        // Initialize RecyclerView
         recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         adapter = HomeRecyclerViewAdapter(mutableListOf(), this)
         recyclerView.adapter = adapter
 
-        // Setup SearchView
         searchView.queryHint = "Search Tiny Trades..."
         setupSearchView()
+
+        userName.text = username
+
+        add_to_cart.setOnClickListener {
+            val cartIntent = Intent(this, AddToCart::class.java).apply {
+                putExtra("USERNAME", userName.text.toString())
+            }
+            startActivity(cartIntent)
+        }
 
         explorebtn.setOnClickListener {
             searchView.requestFocus()
@@ -64,19 +80,20 @@ class MainActivity : AppCompatActivity(), HomeRecyclerViewAdapter.OnItemClickLis
         }
 
         sellbtn.setOnClickListener {
-            val sellIntent = Intent(this, SellActivity::class.java)
+            val sellIntent = Intent(this, SellActivity::class.java).apply {
+                putExtra("USERNAME", userName.text.toString())
+            }
             startActivity(sellIntent)
         }
 
         profilebtn.setOnClickListener {
             val username = "profile"
             val profileIntent = Intent(this, ProfileActivity::class.java).apply {
-                putExtra("USERNAME", username)
+                putExtra("USERNAME", userName.text.toString())
             }
             startActivity(profileIntent)
         }
 
-        // Observe items from database
         observeItemsFromDatabase()
     }
 
@@ -99,9 +116,9 @@ class MainActivity : AppCompatActivity(), HomeRecyclerViewAdapter.OnItemClickLis
             try {
                 val filteredItems = withContext(Dispatchers.IO) {
                     if (query.isEmpty()) {
-                        itemDao.getAllItems() // Fetch all items if query is empty
+                        itemDao.getAllItems()
                     } else {
-                        itemDao.searchItems("%$query%") // Search items with the query in their title
+                        itemDao.searchItems("%$query%")
                     }
                 }
                 adapter.updateItems(filteredItems)

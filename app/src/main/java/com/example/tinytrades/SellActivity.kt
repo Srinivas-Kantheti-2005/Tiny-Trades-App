@@ -156,10 +156,10 @@ class SellActivity : AppCompatActivity() {
             lifecycleScope.launch {
                 try {
                     val existingUser = withContext(Dispatchers.IO) {
-                        itemDao.getUserByUsername(userName)
+                        userDao.getUserByUsername(userName)
                     }
                     val existingProfile = withContext(Dispatchers.IO) {
-                        itemDao.getProfileByEmailId(emailIdText)
+                        profileDao.getProfileByEmailId(emailIdText)
                     }
 
                     if (existingUser != null && existingProfile != null) {

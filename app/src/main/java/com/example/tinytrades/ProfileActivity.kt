@@ -112,7 +112,9 @@ class ProfileActivity : AppCompatActivity() {
             updateProfile()
         }
         sellbtn.setOnClickListener {
-            val sellIntent = Intent(this, SellActivity::class.java)
+            val sellIntent = Intent(this, SellActivity::class.java).apply {
+                putExtra("USERNAME", username.text.toString())
+            }
             startActivity(sellIntent)
         }
         backbtn.setOnClickListener {
@@ -133,7 +135,9 @@ class ProfileActivity : AppCompatActivity() {
             startActivity(exploreIntent)
         }
         homebtn.setOnClickListener {
-            val homeIntent = Intent(this, MainActivity::class.java)
+            val homeIntent = Intent(this, MainActivity::class.java).apply {
+                putExtra("USERNAME", usernameExtra)
+            }
             startActivity(homeIntent)
         }
     }
@@ -250,7 +254,7 @@ class ProfileActivity : AppCompatActivity() {
         val pinCode = pincode.text.toString()
         val mandalText = mandal.text.toString()
         val districtText = district.text.toString()
-        if (isValidProfile(firstName, lastName, genderText, mobileNo, emailId, userName, dNo, streetText, villageText, pinCode, mandalText, districtText)) {
+        if (isValidUpdateProfile(firstName, lastName, genderText, mobileNo, emailId, userName, dNo, streetText, villageText, pinCode, mandalText, districtText)) {
             val profileImage = if (genderText.equals("male", ignoreCase = true)) {
                 R.drawable.men
             } else {
@@ -317,7 +321,7 @@ class ProfileActivity : AppCompatActivity() {
                 showToast("Enter gender")
                 false
             }
-            gender.equals("male", ignoreCase = true) || gender.equals("female", ignoreCase = true) -> {
+            gender.equals("Male", ignoreCase = true) || gender.equals("Female", ignoreCase = true) -> {
                 showToast("Gender must be male or female")
                 false
             }
@@ -330,6 +334,81 @@ class ProfileActivity : AppCompatActivity() {
                 false
             }
             emailId.contains("@") -> {
+                showToast("Enter valid email id")
+                false
+            }
+            dNo.isEmpty() -> {
+                showToast("Enter door number")
+                false
+            }
+            street.isEmpty() -> {
+                showToast("Enter street")
+                false
+            }
+            village.isEmpty() -> {
+                showToast("Enter village")
+                false
+            }
+            pinCode.isEmpty() -> {
+                showToast("Enter pin code")
+                false
+            }
+            mandal.isEmpty() -> {
+                showToast("Enter mandal")
+                false
+            }
+            district.isEmpty() -> {
+                showToast("Enter district")
+                false
+            }
+            else -> true
+        }
+    }
+
+    private fun  isValidUpdateProfile(
+        firstName: String,
+        lastName: String,
+        gender: String,
+        mobileNo: String,
+        emailId: String,
+        userName: String,
+        dNo: String,
+        street: String,
+        village: String,
+        pinCode: String,
+        mandal: String,
+        district: String
+    ): Boolean {
+        return when {
+            userName.isEmpty() -> {
+                showToast("Enter username")
+                false
+            }
+            firstName.isEmpty() -> {
+                showToast("Enter first name")
+                false
+            }
+            lastName.isEmpty() -> {
+                showToast("Enter last name")
+                false
+            }
+            gender.isEmpty() -> {
+                showToast("Enter gender")
+                false
+            }
+            !(gender.equals("Male", ignoreCase = true) || gender.equals("Female", ignoreCase = true)) -> {
+                showToast("Gender must be male or female")
+                false
+            }
+            mobileNo.isEmpty() -> {
+                showToast("Enter mobile number")
+                false
+            }
+            emailId.isEmpty() -> {
+                showToast("Enter email id")
+                false
+            }
+            !emailId.contains("@") -> {
                 showToast("Enter valid email id")
                 false
             }

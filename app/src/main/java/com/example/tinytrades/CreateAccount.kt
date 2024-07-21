@@ -1,6 +1,5 @@
 package com.example.tinytrades
 
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -56,8 +55,7 @@ class CreateAccount : AppCompatActivity() {
         deletebtn = findViewById(R.id.delete)
 
         backbtn.setOnClickListener {
-            val backbtn = Intent(this, ProfileActivity::class.java)
-            startActivity(backbtn)
+            onBackPressed()
         }
 
         createbtn.setOnClickListener {
@@ -199,5 +197,10 @@ class CreateAccount : AppCompatActivity() {
         createUsername.text.clear()
         createPassword.text.clear()
         confirmPassword.text.clear()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
     }
 }

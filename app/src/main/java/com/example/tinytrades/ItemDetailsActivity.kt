@@ -8,8 +8,10 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.tinytrades.database.AppDatabase
+import com.example.tinytrades.database.CartDao
 import com.example.tinytrades.database.ItemDao
 import com.example.tinytrades.database.ProfileDao
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +24,7 @@ class ItemDetailsActivity : AppCompatActivity() {
     private lateinit var database: AppDatabase
     private lateinit var profileDao: ProfileDao
     private lateinit var itemDao: ItemDao
+    private lateinit var cartDao: CartDao
 
     private lateinit var backbtn: ImageButton
     private lateinit var addtocartbtn: Button
@@ -41,6 +44,7 @@ class ItemDetailsActivity : AppCompatActivity() {
         database = AppDatabase.getDatabase(applicationContext)
         profileDao = database.profileDao()
         itemDao = database.itemDao()
+        cartDao = database.cartDao()
 
         backbtn = findViewById(R.id.backbtn)
         addtocartbtn = findViewById(R.id.addtocart)
@@ -57,9 +61,7 @@ class ItemDetailsActivity : AppCompatActivity() {
         }
 
         addtocartbtn.setOnClickListener {
-            val cart = Intent(this, AddToCart::class.java).apply {
-            }
-            startActivity(cart)
+            addToCart()
         }
 
         val bundle = intent.extras
@@ -93,8 +95,14 @@ class ItemDetailsActivity : AppCompatActivity() {
         }
     }
 
+    private fun addToCart() {}
+
     @SuppressLint("MissingSuperCall")
     override fun onBackPressed() {
         finish()
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }

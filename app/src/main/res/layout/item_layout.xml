@@ -22,7 +22,7 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/image"
+            android:id="@+id/cartImage"
             android:layout_width="match_parent"
             android:layout_height="250dp"
             android:contentDescription="@string/image"
@@ -34,10 +34,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/title"/>
+            app:layout_constraintBottom_toTopOf="@id/cartTitle"/>
 
         <TextView
-            android:id="@+id/title"
+            android:id="@+id/cartTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/title"
@@ -46,12 +46,12 @@
             android:textStyle="normal"
             android:layout_marginTop="10dp"
             android:layout_marginStart="10dp"
-            app:layout_constraintStart_toStartOf="@id/image"
-            app:layout_constraintTop_toBottomOf="@id/image"
-            app:layout_constraintBottom_toTopOf="@id/price"/>
+            app:layout_constraintStart_toStartOf="@id/cartImage"
+            app:layout_constraintTop_toBottomOf="@id/cartImage"
+            app:layout_constraintBottom_toTopOf="@id/cartPrice"/>
 
         <TextView
-            android:id="@+id/size"
+            android:id="@+id/cartSize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/size"
@@ -61,12 +61,12 @@
             android:layout_marginStart="0dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
-            app:layout_constraintStart_toStartOf="@id/title"
+            app:layout_constraintStart_toStartOf="@id/cartTitle"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/title"/>
+            app:layout_constraintTop_toBottomOf="@id/cartTitle"/>
 
         <TextView
-            android:id="@+id/price"
+            android:id="@+id/cartPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/price"
@@ -77,8 +77,8 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/image"
-            app:layout_constraintTop_toBottomOf="@id/title"/>
+            app:layout_constraintEnd_toEndOf="@id/cartImage"
+            app:layout_constraintTop_toBottomOf="@id/cartTitle"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -2,16 +2,19 @@ package com.example.tinytrades
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.tinytrades.database.AppDatabase
+import com.example.tinytrades.database.Cart
 import com.example.tinytrades.database.CartDao
 import com.example.tinytrades.database.ItemDao
 import com.example.tinytrades.database.ProfileDao
@@ -19,6 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
 
 class ItemDetailsActivity : AppCompatActivity() {
 
@@ -28,14 +32,15 @@ class ItemDetailsActivity : AppCompatActivity() {
     private lateinit var cartDao: CartDao
 
     private lateinit var backbtn: ImageButton
+    private lateinit var addtocart: Button
     private lateinit var buynow: Button
 
-    private lateinit var buyerUsername: EditText
     private lateinit var image: ImageView
     private lateinit var title: TextView
     private lateinit var size: TextView
     private lateinit var price: TextView
     private lateinit var sellerName: TextView
+    private lateinit var buyerUsername: TextView
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,20 +53,56 @@ class ItemDetailsActivity : AppCompatActivity() {
         cartDao = database.cartDao()
 
         backbtn = findViewById(R.id.backbtn)
+        addtocart = findViewById(R.id.addtocart)
         buynow = findViewById(R.id.buynow)
 
-        buyerUsername = findViewById(R.id.buyerUsername)
         image = findViewById(R.id.itemImage)
         title = findViewById(R.id.itemTitle)
         size = findViewById(R.id.itemSize)
         price = findViewById(R.id.itemPrice)
         sellerName = findViewById(R.id.username)
+        buyerUsername = findViewById(R.id.buyerUsername)
 
         backbtn.setOnClickListener {
             onBackPressed()
         }
 
-        // Removed the addtocartbtn listener
+        addtocart.setOnClickListener {
+            val itemTitleText = title.text.toString()
+            val itemSizeText = size.text.toString()
+            val itemPriceText = price.text.toString().toDouble()
+            val itemQuantity = 1
+
+            val itemBitmap = (image.drawable as? BitmapDrawable)?.bitmap
+            val cartItem = Cart(
+                title = itemTitleText,
+                image = itemBitmap?.toByteArray(),
+                quantity = itemQuantity,
+                size = itemSizeText,
+                price = itemPriceText,
+                sellerUsername = sellerName.text.toString(),
+                buyerUsername = buyerUsername.text.toString()
+            )
+
+            lifecycleScope.launch {
+                val buyerUsernameText = buyerUsername.text.toString()
+                if (buyerUsernameText.isNotEmpty()) {
+                    val buyerProfileExists = withContext(Dispatchers.IO) {
+                        cartDao.getCartItemsByBuyer(buyerUsernameText) != null
+                    }
+                    if (buyerProfileExists) {
+                        withContext(Dispatchers.IO) {
+                            cartDao.insert(cartItem)
+                        }
+                        showToast("Item added to cart")
+                    } else {
+                        showToast("Buyer profile does not exist")
+                    }
+                } else {
+                    showToast("Buyer username is empty")
+                }
+            }
+        }
 
         val bundle = intent.extras
         if (bundle != null) {
@@ -78,7 +119,7 @@ class ItemDetailsActivity : AppCompatActivity() {
             title.text = itemTitleText
             size.text = itemSizeText
             price.text = itemPriceText.toString()
-            buyerUsername.setText(buyerUserName)
+            buyerUsername.text = buyerUserName
 
             GlobalScope.launch(Dispatchers.Main) {
                 val profile = withContext(Dispatchers.IO) {
@@ -103,5 +144,11 @@ class ItemDetailsActivity : AppCompatActivity() {
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun Bitmap.toByteArray(): ByteArray {
+        val stream = ByteArrayOutputStream()
+        this.compress(Bitmap.CompressFormat.PNG, 100, stream)
+        return stream.toByteArray()
     }
 }

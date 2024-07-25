@@ -9,7 +9,7 @@
     tools:context=".CartItemDetails">
 
     <ImageView
-        android:id="@+id/image"
+        android:id="@+id/cartDetailImage"
         android:layout_width="match_parent"
         android:layout_height="400dp"
         android:layout_marginTop="16dp"
@@ -36,7 +36,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/title"
+        android:id="@+id/cartDetailTitle"
         android:autofillHints="no"
         android:padding="15dp"
         android:hint="@string/title"
@@ -49,7 +49,7 @@
         android:layout_marginEnd="10dp"
         android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/image"/>
+        app:layout_constraintTop_toBottomOf="@id/cartDetailImage"/>
 
     <ImageView
         android:layout_width="40dp"
@@ -61,14 +61,14 @@
         android:layout_marginTop="0dp"
         app:layout_constraintTop_toBottomOf="@id/title"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/quantity"
-        app:layout_constraintTop_toTopOf="@id/quantity"
-        app:layout_constraintBottom_toBottomOf="@id/quantity"/>
+        app:layout_constraintEnd_toStartOf="@id/cartDetailquantity"
+        app:layout_constraintTop_toTopOf="@id/cartDetailquantity"
+        app:layout_constraintBottom_toBottomOf="@id/cartDetailquantity"/>
 
     <EditText
         android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:id="@+id/quantity"
+        android:id="@+id/cartDetailquantity"
         android:autofillHints="no"
         android:text="@string/buyer_item_quantity"
         android:padding="15dp"
@@ -81,7 +81,7 @@
         android:layout_marginEnd="0dp"
         android:layout_marginTop="10dp"
         tools:ignore="LabelFor"
-        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintTop_toBottomOf="@id/cartDetailTitle"
         app:layout_constraintStart_toEndOf="@id/decrement"/>
 
     <ImageView
@@ -93,15 +93,15 @@
         android:layout_marginStart="0dp"
         android:layout_marginEnd="0dp"
         android:layout_marginTop="0dp"
-        app:layout_constraintTop_toBottomOf="@id/title"
-        app:layout_constraintStart_toEndOf="@id/quantity"
-        app:layout_constraintTop_toTopOf="@id/quantity"
-        app:layout_constraintBottom_toBottomOf="@id/quantity"/>
+        app:layout_constraintTop_toBottomOf="@id/cartDetailTitle"
+        app:layout_constraintStart_toEndOf="@id/cartDetailquantity"
+        app:layout_constraintTop_toTopOf="@id/cartDetailquantity"
+        app:layout_constraintBottom_toBottomOf="@id/cartDetailquantity"/>
 
     <EditText
         android:layout_width="140dp"
         android:layout_height="wrap_content"
-        android:id="@+id/price"
+        android:id="@+id/cartDetailPrice"
         android:autofillHints="no"
         android:padding="15dp"
         android:hint="@string/price"
@@ -115,13 +115,13 @@
         android:layout_marginStart="0dp"
         android:layout_marginEnd="20dp"
         android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@id/title"
-        app:layout_constraintEnd_toStartOf="@id/size"/>
+        app:layout_constraintTop_toBottomOf="@id/cartDetailTitle"
+        app:layout_constraintEnd_toStartOf="@id/cartDetailSize"/>
 
     <EditText
         android:layout_width="80dp"
         android:layout_height="wrap_content"
-        android:id="@+id/size"
+        android:id="@+id/cartDetailSize"
         android:autofillHints="no"
         android:padding="15dp"
         android:hint="@string/size"
@@ -134,7 +134,7 @@
         android:layout_marginEnd="10dp"
         android:layout_marginTop="10dp"
         tools:ignore="TextFields"
-        app:layout_constraintTop_toBottomOf="@id/title"
+        app:layout_constraintTop_toBottomOf="@id/cartDetailTitle"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <Button
@@ -150,7 +150,7 @@
         android:layout_marginEnd="0dp"
         android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/quantity"/>
+        app:layout_constraintTop_toBottomOf="@id/cartDetailquantity"/>
 
     <Button
         android:layout_width="150dp"
@@ -164,7 +164,7 @@
         android:layout_marginStart="0dp"
         android:layout_marginEnd="10dp"
         android:layout_marginTop="20dp"
-        app:layout_constraintTop_toBottomOf="@id/size"
+        app:layout_constraintTop_toBottomOf="@id/cartDetailSize"
         app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

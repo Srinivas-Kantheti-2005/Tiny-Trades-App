@@ -12,12 +12,11 @@ import androidx.room.PrimaryKey
         ForeignKey(
             entity = User::class,
             parentColumns = arrayOf("username"),
-            childColumns = arrayOf("username"),
+            childColumns = arrayOf("sellerUsername"),
             onDelete = ForeignKey.CASCADE
         )
     ]
 )
-
 data class Cart (
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "Id")
@@ -38,9 +37,9 @@ data class Cart (
     @ColumnInfo(name = "Price")
     val price: Double,
 
-    @ColumnInfo(name = "username")
+    @ColumnInfo(name = "sellerUsername")
     val sellerUsername: String,
 
-    @ColumnInfo(name = "Buyer_Username")
+    @ColumnInfo(name = "buyerUsername")
     val buyerUsername: String
 )

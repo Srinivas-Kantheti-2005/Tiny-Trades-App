@@ -3,6 +3,7 @@ package com.example.tinytrades.database
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.Query
 import androidx.room.Update
 
 @Dao
@@ -15,5 +16,10 @@ interface CartDao {
 
     @Delete
     suspend fun delete(cart: Cart)
-}
 
+    @Query("SELECT * FROM cart WHERE sellerUsername = :username")
+    suspend fun getCartItemsBySeller(username: String): List<Cart>
+
+    @Query("SELECT * FROM cart WHERE buyerUsername = :buyerUsername")
+    suspend fun getCartItemsByBuyer(buyerUsername: String): List<Cart>
+}

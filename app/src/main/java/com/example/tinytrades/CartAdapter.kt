@@ -1,7 +1,5 @@
 package com.example.tinytrades
 
-import android.content.Context
-import android.content.Intent
 import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tinytrades.database.Cart
 
-class CartAdapter(private val context: Context, private val CartItems: List<Cart>): RecyclerView.Adapter<CartAdapter.ViewHolder>() {
+class CartAdapter(private val cartItems: MutableList<Cart>) : RecyclerView.Adapter<CartAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.add_to_cart_layout, parent, false)
@@ -19,34 +17,34 @@ class CartAdapter(private val context: Context, private val CartItems: List<Cart
     }
 
     override fun getItemCount(): Int {
-        return CartItems.size
+        return cartItems.size
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val currentItem = CartItems[position]
+        val currentItem = cartItems[position]
+
         currentItem.image?.let {
-            holder.image.setImageBitmap(BitmapFactory.decodeByteArray(it, 0, it.size))
-        }
+            val bitmap = BitmapFactory.decodeByteArray(it, 0, it.size)
+            holder.image.setImageBitmap(bitmap)
+        } ?: holder.image.setImageResource(android.R.color.transparent)
+
         holder.title.text = currentItem.title
         holder.size.text = currentItem.size
         holder.price.text = currentItem.price.toString()
-
-        holder.itemView.setOnClickListener {
-            val context = holder.itemView.context
-            val intent = Intent(context, CartItemDetails::class.java)
-        }
+        holder.quantity.text = currentItem.quantity.toString()
     }
 
-    inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        val image: ImageView = itemView.findViewById(R.id.cartImage)
-        val title: TextView = itemView.findViewById(R.id.cartTitle)
-        val size: TextView = itemView.findViewById(R.id.cartSize)
-        val price: TextView = itemView.findViewById(R.id.cartPrice)
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val image: ImageView = itemView.findViewById(R.id.cart_image)
+        val title: TextView = itemView.findViewById(R.id.cart_title)
+        val size: TextView = itemView.findViewById(R.id.cart_size)
+        val price: TextView = itemView.findViewById(R.id.cart_price)
+        val quantity: TextView = itemView.findViewById(R.id.cart_quantity)
     }
 
-//    fun updateCart(newCart: List<Cart>) {
-//        CartItems.clear()
-//        CartItems.addAll(newCart)
-//        notifyDataSetChanged()
-//    }
+    fun updateCart(newCart: List<Cart>) {
+        cartItems.clear()
+        cartItems.addAll(newCart)
+        notifyDataSetChanged()
+    }
 }

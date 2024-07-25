@@ -69,4 +69,6 @@
     <string name="buyer_item_quantity">1</string>
     <string name="buyer_image">Buyer image</string>
     <string name="buyer_name">Buyer Name</string>
+    <string name="product_details">Product Details</string>
+    <string name="buyer_username">Buyer Username</string>
 </resources>

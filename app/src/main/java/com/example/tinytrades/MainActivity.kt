@@ -30,11 +30,11 @@ class MainActivity : AppCompatActivity(), HomeRecyclerViewAdapter.OnItemClickLis
     private lateinit var searchView: SearchView
     private lateinit var recyclerView: RecyclerView
 
-    private lateinit var add_to_cart: ImageButton
+    private lateinit var addToCart: ImageButton
     private lateinit var userName: TextView
-    private lateinit var explorebtn: ImageButton
-    private lateinit var sellbtn: ImageButton
-    private lateinit var profilebtn: ImageButton
+    private lateinit var exploreBtn: ImageButton
+    private lateinit var sellBtn: ImageButton
+    private lateinit var profileBtn: ImageButton
 
     private lateinit var adapter: HomeRecyclerViewAdapter
 
@@ -52,11 +52,11 @@ class MainActivity : AppCompatActivity(), HomeRecyclerViewAdapter.OnItemClickLis
         searchView = findViewById(R.id.searchView)
         recyclerView = findViewById(R.id.recyclerView)
 
-        add_to_cart = findViewById(R.id.add_to_cart)
+        addToCart = findViewById(R.id.add_to_cart)
         userName = findViewById(R.id.username)
-        explorebtn = findViewById(R.id.explore)
-        sellbtn = findViewById(R.id.sell)
-        profilebtn = findViewById(R.id.profile)
+        exploreBtn = findViewById(R.id.explore)
+        sellBtn = findViewById(R.id.sell)
+        profileBtn = findViewById(R.id.profile)
 
         recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         adapter = HomeRecyclerViewAdapter(mutableListOf(), this)
@@ -67,27 +67,26 @@ class MainActivity : AppCompatActivity(), HomeRecyclerViewAdapter.OnItemClickLis
 
         userName.text = username
 
-        add_to_cart.setOnClickListener {
+        addToCart.setOnClickListener {
             val cartIntent = Intent(this, AddToCart::class.java).apply {
                 putExtra("USERNAME", userName.text.toString())
             }
             startActivity(cartIntent)
         }
 
-        explorebtn.setOnClickListener {
+        exploreBtn.setOnClickListener {
             searchView.requestFocus()
             searchView.isIconified = false
         }
 
-        sellbtn.setOnClickListener {
+        sellBtn.setOnClickListener {
             val sellIntent = Intent(this, SellActivity::class.java).apply {
                 putExtra("USERNAME", userName.text.toString())
             }
             startActivity(sellIntent)
         }
 
-        profilebtn.setOnClickListener {
-            val username = "profile"
+        profileBtn.setOnClickListener {
             val profileIntent = Intent(this, ProfileActivity::class.java).apply {
                 putExtra("USERNAME", userName.text.toString())
             }
@@ -147,7 +146,7 @@ class MainActivity : AppCompatActivity(), HomeRecyclerViewAdapter.OnItemClickLis
     }
 
     private fun navigateToExplore() {
-        explorebtn.performClick()
+        exploreBtn.performClick()
     }
 
     private fun showToastMsg(message: String) {
@@ -161,6 +160,7 @@ class MainActivity : AppCompatActivity(), HomeRecyclerViewAdapter.OnItemClickLis
             putExtra("itemSize", item.size)
             putExtra("itemPrice", item.price)
             putExtra("sellerUsername", item.username)
+            putExtra("buyerUsername", userName.text.toString())
         }
         startActivity(intent)
     }

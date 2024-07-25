@@ -38,7 +38,7 @@ data class Cart (
     @ColumnInfo(name = "Price")
     val price: Double,
 
-    @ColumnInfo(name = "Seller_Username")
+    @ColumnInfo(name = "username")
     val sellerUsername: String,
 
     @ColumnInfo(name = "Buyer_Username")

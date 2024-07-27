@@ -2,7 +2,6 @@ package com.example.tinytrades
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -12,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tinytrades.database.AppDatabase
+import com.example.tinytrades.database.Cart
 import com.example.tinytrades.database.CartDao
 import com.example.tinytrades.database.ItemDao
 import com.example.tinytrades.database.Profile
@@ -28,14 +28,6 @@ class AddToCart : AppCompatActivity() {
     private lateinit var profileDao: ProfileDao
     private lateinit var itemDao: ItemDao
     private lateinit var cartDao: CartDao
-
-    private lateinit var cartImage: ImageView
-    private lateinit var cartTitle: TextView
-    private lateinit var cartSize: TextView
-    private lateinit var decrement: ImageButton
-    private lateinit var quantity: EditText
-    private lateinit var increment: ImageButton
-    private lateinit var price: TextView
 
     private lateinit var backbtn: ImageButton
     private lateinit var buyerImage: ImageView
@@ -60,7 +52,9 @@ class AddToCart : AppCompatActivity() {
         buyerName = findViewById(R.id.buyerName)
         addToCartRecyclerView = findViewById(R.id.add_to_cart_recycler_view)
 
-        cartAdapter = CartAdapter(mutableListOf())
+        cartAdapter = CartAdapter(mutableListOf()) { cartItem, updatedQuantity ->
+            updateCartItem(cartItem, updatedQuantity)
+        }
         addToCartRecyclerView.layoutManager = LinearLayoutManager(this)
         addToCartRecyclerView.adapter = cartAdapter
 
@@ -106,6 +100,24 @@ class AddToCart : AppCompatActivity() {
                 cartAdapter.updateCart(items)
             } catch (e: Exception) {
                 showToast("Error loading cart items: ${e.message}")
+            }
+        }
+    }
+
+    private fun updateCartItem(cartItem: Cart, newQuantity: Int) {
+        lifecycleScope.launch {
+            try {
+                if (newQuantity > 0) {
+                    withContext(Dispatchers.IO) {
+                        val updatedCartItem = cartItem.copy(quantity = newQuantity)
+                        cartDao.update(updatedCartItem)
+                    }
+                    showToast("Cart updated successfully")
+                } else {
+                    showToast("Quantity must be greater than zero")
+                }
+            } catch (e: Exception) {
+                showToast("Error updating cart: ${e.message}")
             }
         }
     }

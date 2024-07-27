@@ -53,23 +53,9 @@
             app:layout_constraintStart_toEndOf="@id/cart_image"
             app:layout_constraintTop_toBottomOf="@id/cart_title"/>
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/decrement"
-            android:src="@drawable/baseline_arrow_left_24"
-            android:contentDescription="@string/decrement"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="0dp"
-            app:layout_constraintTop_toBottomOf="@id/cart_size"
-            app:layout_constraintStart_toEndOf="@id/cart_image"
-            app:layout_constraintTop_toTopOf="@id/cart_quantity"
-            app:layout_constraintBottom_toBottomOf="@id/cart_quantity"
-            app:layout_constraintEnd_toStartOf="@id/cart_quantity"/>
-
         <EditText
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:id="@+id/cart_quantity"
             android:autofillHints="no"
             android:inputType="number"
@@ -82,23 +68,8 @@
             android:layout_marginEnd="0dp"
             android:layout_marginTop="10dp"
             app:layout_constraintTop_toBottomOf="@id/cart_size"
-            app:layout_constraintStart_toEndOf="@id/decrement"
-            app:layout_constraintEnd_toStartOf="@id/increment"
+            app:layout_constraintStart_toStartOf="@id/cart_size"
             tools:ignore="LabelFor" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/increment"
-            android:src="@drawable/baseline_arrow_right_24"
-            android:contentDescription="@string/increment"
-            android:layout_marginStart="0dp"
-            android:layout_marginEnd="0dp"
-            android:layout_marginTop="0dp"
-            app:layout_constraintTop_toBottomOf="@id/cart_size"
-            app:layout_constraintStart_toEndOf="@id/cart_quantity"
-            app:layout_constraintTop_toTopOf="@id/cart_quantity"
-            app:layout_constraintBottom_toBottomOf="@id/cart_quantity"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -112,6 +83,20 @@
             android:layout_marginStart="10dp"
             app:layout_constraintTop_toBottomOf="@id/cart_quantity"
             app:layout_constraintStart_toEndOf="@id/cart_image"/>
+
+        <Button
+            android:layout_width="110dp"
+            android:layout_height="40dp"
+            android:id="@+id/update"
+            android:text="@string/update"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:backgroundTint="@color/orange"
+            android:layout_marginBottom="5dp"
+            android:layout_marginEnd="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

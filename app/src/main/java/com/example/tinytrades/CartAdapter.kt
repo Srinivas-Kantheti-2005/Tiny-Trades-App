@@ -12,7 +12,8 @@ import com.example.tinytrades.database.Cart
 
 class CartAdapter(
     private val cartItems: MutableList<Cart>,
-    private val onUpdateClick: (Cart, Int) -> Unit
+    private val onUpdateClick: (Cart, Int) -> Unit,
+    private val onItemCLick: (Cart) -> Unit
 ) : RecyclerView.Adapter<CartAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -40,6 +41,10 @@ class CartAdapter(
         holder.update.setOnClickListener {
             val updatedQuantity = holder.quantity.text.toString().toIntOrNull() ?: 0
             onUpdateClick(currentItem, updatedQuantity)
+        }
+
+        holder.itemView.setOnClickListener {
+            onItemCLick(currentItem)
         }
     }
 

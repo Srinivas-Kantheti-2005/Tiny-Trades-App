@@ -1,6 +1,7 @@
 package com.example.tinytrades
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -52,9 +53,11 @@ class AddToCart : AppCompatActivity() {
         buyerName = findViewById(R.id.buyerName)
         addToCartRecyclerView = findViewById(R.id.add_to_cart_recycler_view)
 
-        cartAdapter = CartAdapter(mutableListOf()) { cartItem, updatedQuantity ->
+        cartAdapter = CartAdapter(mutableListOf(), { cartItem, updatedQuantity ->
             updateCartItem(cartItem, updatedQuantity)
-        }
+        }, { cartItem ->
+            navigateToCartItemDetails(cartItem.title)
+        })
         addToCartRecyclerView.layoutManager = LinearLayoutManager(this)
         addToCartRecyclerView.adapter = cartAdapter
 
@@ -67,6 +70,13 @@ class AddToCart : AppCompatActivity() {
             loadProfile(username)
             loadCartItems(username)
         }
+    }
+
+    private fun navigateToCartItemDetails(itemTitle: String) {
+        val intent = Intent(this, CartItemDetails::class.java).apply {
+            putExtra("ITEM_TITLE", itemTitle)
+        }
+        startActivity(intent)
     }
 
     private fun loadProfile(username: String) {

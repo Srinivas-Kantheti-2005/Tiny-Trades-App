@@ -51,20 +51,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cartDetailImage"/>
 
-    <ImageView
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:id="@+id/decrement"
-        android:src="@drawable/baseline_arrow_left_24"
-        android:contentDescription="@string/decrement"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="0dp"
-        app:layout_constraintTop_toBottomOf="@id/title"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/cartDetailquantity"
-        app:layout_constraintTop_toTopOf="@id/cartDetailquantity"
-        app:layout_constraintBottom_toBottomOf="@id/cartDetailquantity"/>
-
     <EditText
         android:layout_width="60dp"
         android:layout_height="wrap_content"
@@ -77,29 +63,15 @@
         android:textStyle="normal"
         android:textColor="@color/black"
         android:gravity="center"
-        android:layout_marginStart="0dp"
+        android:layout_marginStart="20dp"
         android:layout_marginEnd="0dp"
         android:layout_marginTop="10dp"
         tools:ignore="LabelFor"
         app:layout_constraintTop_toBottomOf="@id/cartDetailTitle"
-        app:layout_constraintStart_toEndOf="@id/decrement"/>
-
-    <ImageView
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:id="@+id/increment"
-        android:src="@drawable/baseline_arrow_right_24"
-        android:contentDescription="@string/increment"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
-        android:layout_marginTop="0dp"
-        app:layout_constraintTop_toBottomOf="@id/cartDetailTitle"
-        app:layout_constraintStart_toEndOf="@id/cartDetailquantity"
-        app:layout_constraintTop_toTopOf="@id/cartDetailquantity"
-        app:layout_constraintBottom_toBottomOf="@id/cartDetailquantity"/>
+        app:layout_constraintStart_toStartOf="@id/cartDetailTitle"/>
 
     <EditText
-        android:layout_width="140dp"
+        android:layout_width="170dp"
         android:layout_height="wrap_content"
         android:id="@+id/cartDetailPrice"
         android:autofillHints="no"
@@ -116,10 +88,10 @@
         android:layout_marginEnd="20dp"
         android:layout_marginTop="10dp"
         app:layout_constraintTop_toBottomOf="@id/cartDetailTitle"
-        app:layout_constraintEnd_toStartOf="@id/cartDetailSize"/>
+        app:layout_constraintStart_toEndOf="@id/cartDetailquantity"/>
 
     <EditText
-        android:layout_width="80dp"
+        android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:id="@+id/cartDetailSize"
         android:autofillHints="no"

@@ -22,4 +22,7 @@ interface CartDao {
 
     @Query("SELECT * FROM cart WHERE buyerUsername = :buyerUsername")
     suspend fun getCartItemsByBuyer(buyerUsername: String): List<Cart>
+
+    @Query("select * from cart where title = :itemTitle")
+    suspend fun getCartItemByTitle(itemTitle: String): Cart?
 }

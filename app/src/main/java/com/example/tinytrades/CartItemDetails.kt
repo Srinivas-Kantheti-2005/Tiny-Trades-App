@@ -1,5 +1,6 @@
 package com.example.tinytrades
 
+import android.annotation.SuppressLint
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.widget.Button
@@ -36,8 +37,11 @@ class CartItemDetails : AppCompatActivity() {
     private lateinit var size: TextView
 
     private lateinit var buynow: Button
-    private lateinit var delete: Button
+    private lateinit var update: Button
 
+    private var currentItem: Cart? = null
+
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cart_item_details)
@@ -54,8 +58,9 @@ class CartItemDetails : AppCompatActivity() {
         quantity = findViewById(R.id.cartDetailquantity)
         price = findViewById(R.id.cartDetailPrice)
         size = findViewById(R.id.cartDetailSize)
+
         buynow = findViewById(R.id.buynow)
-        delete = findViewById(R.id.delete)
+        update = findViewById(R.id.cart_update)
 
         backbtn.setOnClickListener {
             onBackPressed()
@@ -65,7 +70,41 @@ class CartItemDetails : AppCompatActivity() {
         if (itemTitle.isNotEmpty()) {
             loadItemDetails(itemTitle)
         }
+
+        update.setOnClickListener {
+            currentItem?.let {
+                updateItem(it)
+            }
+        }
     }
+
+    private fun updateItem(cartItem: Cart) {
+        lifecycleScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    val updatedQuantity = quantity.text.toString().toIntOrNull() ?: cartItem.quantity
+                    val unitPrice = if (cartItem.quantity > 0) {
+                        cartItem.price / cartItem.quantity
+                    } else {
+                        0.0
+                    }
+                    cartItem.quantity = updatedQuantity
+                    cartItem.price = unitPrice * updatedQuantity
+                    cartItem.title = title.text.toString()
+                    cartItem.size = size.text.toString()
+                    cartDao.update(cartItem)
+                }
+                showToast("Cart item updated successfully")
+                displayItemDetails(cartItem)
+                setResult(RESULT_OK)
+                finish()
+            } catch (e: Exception) {
+                showToast("Error updating item: ${e.message}")
+            }
+        }
+    }
+
+
 
     private fun loadItemDetails(itemTitle: String) {
         lifecycleScope.launch {
@@ -74,6 +113,7 @@ class CartItemDetails : AppCompatActivity() {
                     cartDao.getCartItemByTitle(itemTitle)
                 }
                 if (item != null) {
+                    currentItem = item
                     displayItemDetails(item)
                 } else {
                     showToast("Item not found")
@@ -94,6 +134,7 @@ class CartItemDetails : AppCompatActivity() {
         price.text = item.price.toString()
         size.text = item.size
     }
+
 
     override fun onBackPressed() {
         super.onBackPressed()

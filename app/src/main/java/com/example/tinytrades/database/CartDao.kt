@@ -17,9 +17,6 @@ interface CartDao {
     @Delete
     suspend fun delete(cart: Cart)
 
-    @Query("SELECT * FROM cart WHERE sellerUsername = :username")
-    suspend fun getCartItemsBySeller(username: String): List<Cart>
-
     @Query("SELECT * FROM cart WHERE buyerUsername = :buyerUsername")
     suspend fun getCartItemsByBuyer(buyerUsername: String): List<Cart>
 

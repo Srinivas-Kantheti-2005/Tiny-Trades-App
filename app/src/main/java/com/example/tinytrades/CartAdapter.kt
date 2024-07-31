@@ -11,9 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.tinytrades.database.Cart
 
 class CartAdapter(
-    private val cartItems: MutableList<Cart>,
-    private val onUpdateClick: (Cart, Int) -> Unit,
-    private val onItemCLick: (Cart) -> Unit
+    private var cartItems: List<Cart>,
+    private val onQuantityUpdated: (Cart, Int) -> Unit,
+    private val onItemClicked: (Cart) -> Unit,
+    private val onItemDeleted: (Cart) -> Unit
 ) : RecyclerView.Adapter<CartAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -40,13 +41,19 @@ class CartAdapter(
 
         holder.update.setOnClickListener {
             val updatedQuantity = holder.quantity.text.toString().toIntOrNull() ?: 0
-            onUpdateClick(currentItem, updatedQuantity)
+            onQuantityUpdated(currentItem, updatedQuantity)
+        }
+
+        holder.delete.setOnClickListener {
+            onItemDeleted(currentItem)
         }
 
         holder.itemView.setOnClickListener {
-            onItemCLick(currentItem)
+            onItemClicked(currentItem)
         }
     }
+
+
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val image: ImageView = itemView.findViewById(R.id.cart_image)
@@ -55,11 +62,11 @@ class CartAdapter(
         val price: TextView = itemView.findViewById(R.id.cart_price)
         val quantity: TextView = itemView.findViewById(R.id.cart_quantity)
         val update: Button = itemView.findViewById(R.id.update)
+        val delete: Button = itemView.findViewById(R.id.delete)
     }
 
-    fun updateCart(newCart: List<Cart>) {
-        cartItems.clear()
-        cartItems.addAll(newCart)
+    fun updateCart(items: List<Cart>) {
+        cartItems = items
         notifyDataSetChanged()
     }
 }

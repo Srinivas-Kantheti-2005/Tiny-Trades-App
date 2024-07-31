@@ -23,19 +23,19 @@ data class Cart (
     val id: Int = 0,
 
     @ColumnInfo(name = "Title")
-    val title: String,
+    var title: String,
 
     @ColumnInfo(name = "Image")
     val image: ByteArray?,
 
     @ColumnInfo(name = "Quantity")
-    val quantity: Int,
+    var quantity: Int,
 
     @ColumnInfo(name = "Size")
-    val size: String,
+    var size: String,
 
     @ColumnInfo(name = "Price")
-    val price: Double,
+    var price: Double,
 
     @ColumnInfo(name = "sellerUsername")
     val sellerUsername: String,

@@ -57,7 +57,10 @@ class AddToCart : AppCompatActivity() {
             updateCartItem(cartItem, updatedQuantity)
         }, { cartItem ->
             navigateToCartItemDetails(cartItem.title)
+        }, { cartItem ->
+            deleteCartItem(cartItem)
         })
+
         addToCartRecyclerView.layoutManager = LinearLayoutManager(this)
         addToCartRecyclerView.adapter = cartAdapter
 
@@ -119,9 +122,16 @@ class AddToCart : AppCompatActivity() {
             try {
                 if (newQuantity > 0) {
                     withContext(Dispatchers.IO) {
-                        val updatedCartItem = cartItem.copy(quantity = newQuantity)
+                        val unitPrice = if (cartItem.quantity > 0) {
+                            cartItem.price / cartItem.quantity
+                        } else {
+                            cartItem.price
+                        }
+                        val newPrice = unitPrice * newQuantity
+                        val updatedCartItem = cartItem.copy(quantity = newQuantity, price = newPrice)
                         cartDao.update(updatedCartItem)
                     }
+                    loadCartItems(intent.getStringExtra("USERNAME") ?: "")
                     showToast("Cart updated successfully")
                 } else {
                     showToast("Quantity must be greater than zero")
@@ -132,9 +142,34 @@ class AddToCart : AppCompatActivity() {
         }
     }
 
+
+
+    private fun deleteCartItem(cartItem: Cart) {
+        lifecycleScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    cartDao.delete(cartItem)
+                }
+                loadCartItems(intent.getStringExtra("USERNAME") ?: "")
+                showToast("Item removed from cart")
+            } catch (e: Exception) {
+                showToast("Error removing item from cart: ${e.message}")
+            }
+        }
+    }
+
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
+
+    override fun onResume() {
+        super.onResume()
+        val username = intent.getStringExtra("USERNAME") ?: ""
+        if (username.isNotEmpty()) {
+            loadCartItems(username)
+        }
+    }
+
 
     override fun onBackPressed() {
         super.onBackPressed()

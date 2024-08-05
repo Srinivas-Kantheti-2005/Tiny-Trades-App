@@ -29,13 +29,12 @@ class CartItemDetails : AppCompatActivity() {
     private lateinit var cartDao: CartDao
 
     private lateinit var backbtn: ImageButton
-
+    private lateinit var buyerUsername: TextView
     private lateinit var image: ImageView
     private lateinit var title: TextView
     private lateinit var quantity: TextView
     private lateinit var price: TextView
     private lateinit var size: TextView
-
     private lateinit var buynow: Button
     private lateinit var update: Button
 
@@ -53,6 +52,7 @@ class CartItemDetails : AppCompatActivity() {
         cartDao = database.cartDao()
 
         backbtn = findViewById(R.id.backbtn)
+        buyerUsername = findViewById(R.id.buyerUsername)
         image = findViewById(R.id.cartDetailImage)
         title = findViewById(R.id.cartDetailTitle)
         quantity = findViewById(R.id.cartDetailquantity)
@@ -67,9 +67,12 @@ class CartItemDetails : AppCompatActivity() {
         }
 
         val itemTitle = intent.getStringExtra("ITEM_TITLE") ?: ""
+        val usernameExtra = intent.getStringExtra("USERNAME") ?: ""
         if (itemTitle.isNotEmpty()) {
             loadItemDetails(itemTitle)
         }
+
+        buyerUsername.text = usernameExtra
 
         update.setOnClickListener {
             currentItem?.let {
@@ -104,8 +107,6 @@ class CartItemDetails : AppCompatActivity() {
         }
     }
 
-
-
     private fun loadItemDetails(itemTitle: String) {
         lifecycleScope.launch {
             try {
@@ -134,7 +135,6 @@ class CartItemDetails : AppCompatActivity() {
         price.text = item.price.toString()
         size.text = item.size
     }
-
 
     override fun onBackPressed() {
         super.onBackPressed()

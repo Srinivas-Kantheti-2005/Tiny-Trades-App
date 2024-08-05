@@ -95,9 +95,9 @@ class CreateAccount : AppCompatActivity() {
     }
 
     private fun getUser() {
-        val username = createUsername.text.toString()
-        val password = createPassword.text.toString()
-        val cpassword = confirmPassword.text.toString()
+        val username = createUsername.text.toString().trim()
+        val password = createPassword.text.toString().trim()
+        val cpassword = confirmPassword.text.toString().trim()
 
         isValidUser(username, password, cpassword)
     }

@@ -11,13 +11,7 @@ import androidx.room.PrimaryKey
         ForeignKey(
             entity = User::class,
             parentColumns = arrayOf("username"),
-            childColumns = arrayOf("selleUsername"),
-            onDelete = ForeignKey.CASCADE
-        ),
-        ForeignKey(
-            entity = Profile::class,
-            parentColumns = arrayOf("username"),
-            childColumns = arrayOf("buyerUsername"),
+            childColumns = arrayOf("sellerUsername"),
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(

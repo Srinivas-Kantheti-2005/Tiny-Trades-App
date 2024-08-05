@@ -31,6 +31,7 @@ class AddToCart : AppCompatActivity() {
     private lateinit var cartDao: CartDao
 
     private lateinit var backbtn: ImageButton
+    private lateinit var username: TextView
     private lateinit var buyerImage: ImageView
     private lateinit var buyerName: TextView
     private lateinit var addToCartRecyclerView: RecyclerView
@@ -42,6 +43,8 @@ class AddToCart : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_to_cart)
 
+        val usernameExtra = intent.getStringExtra("USERNAME") ?: ""
+
         database = AppDatabase.getDatabase(applicationContext)
         userDao = database.userDao()
         profileDao = database.profileDao()
@@ -49,6 +52,7 @@ class AddToCart : AppCompatActivity() {
         cartDao = database.cartDao()
 
         backbtn = findViewById(R.id.backbtn)
+        username = findViewById(R.id.username)
         buyerImage = findViewById(R.id.buyerImage)
         buyerName = findViewById(R.id.buyerName)
         addToCartRecyclerView = findViewById(R.id.add_to_cart_recycler_view)
@@ -68,16 +72,17 @@ class AddToCart : AppCompatActivity() {
             onBackPressed()
         }
 
-        val username = intent.getStringExtra("USERNAME") ?: ""
-        if (username.isNotEmpty()) {
-            loadProfile(username)
-            loadCartItems(username)
+        if (usernameExtra.isNotEmpty()) {
+            username.text = usernameExtra
+            loadProfile(usernameExtra)
+            loadCartItems(usernameExtra)
         }
     }
 
     private fun navigateToCartItemDetails(itemTitle: String) {
         val intent = Intent(this, CartItemDetails::class.java).apply {
             putExtra("ITEM_TITLE", itemTitle)
+            putExtra("USERNAME", intent.getStringExtra("USERNAME"))
         }
         startActivity(intent)
     }

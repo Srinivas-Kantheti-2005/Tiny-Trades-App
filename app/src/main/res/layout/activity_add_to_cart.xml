@@ -9,12 +9,11 @@
     android:background="@color/background"
     tools:context=".AddToCart">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:id="@+id/add_to_cart"
         android:background="@color/white"
-        android:orientation="horizontal"
         tools:ignore="MissingConstraints">
 
         <ImageButton
@@ -25,8 +24,11 @@
             android:background="@color/white"
             android:contentDescription="@string/backbtn"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"/>
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="0dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -36,9 +38,30 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="@color/black"
+            android:layout_marginTop="0dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="0dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/backbtn"/>
+
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="19dp"
-            android:layout_marginEnd="21dp"/>
-    </LinearLayout>
+            android:text="@string/user"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="10dp"
+            app:layout_goneMarginTop="0dp"
+            android:layout_marginBottom="0dp"
+            app:layout_constraintEnd_toEndOf="@id/add_to_cart"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView
         android:layout_width="150dp"

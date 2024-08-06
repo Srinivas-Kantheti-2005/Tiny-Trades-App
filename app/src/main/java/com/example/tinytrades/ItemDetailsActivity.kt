@@ -33,7 +33,6 @@ class ItemDetailsActivity : AppCompatActivity() {
 
     private lateinit var backbtn: ImageButton
     private lateinit var addtocart: Button
-    private lateinit var buynow: Button
 
     private lateinit var image: ImageView
     private lateinit var title: TextView
@@ -54,7 +53,6 @@ class ItemDetailsActivity : AppCompatActivity() {
 
         backbtn = findViewById(R.id.backbtn)
         addtocart = findViewById(R.id.addtocart)
-        buynow = findViewById(R.id.buynow)
 
         image = findViewById(R.id.itemImage)
         title = findViewById(R.id.itemTitle)

@@ -1,6 +1,7 @@
 package com.example.tinytrades
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.widget.Button
@@ -70,6 +71,21 @@ class CartItemDetails : AppCompatActivity() {
         val usernameExtra = intent.getStringExtra("USERNAME") ?: ""
         if (itemTitle.isNotEmpty()) {
             loadItemDetails(itemTitle)
+        }
+
+        buynow.setOnClickListener {
+            val imageByteArray = currentItem?.image
+
+            val buyIntent = Intent(this, BuyNow::class.java).apply {
+                putExtra("USERNAME", usernameExtra)
+                putExtra("ITEM_ID", currentItem?.id)
+                putExtra("ITEM_IMAGE", imageByteArray)
+                putExtra("ITEM_TITLE", title.text.toString())
+                putExtra("ITEM_SIZE", size.text.toString())
+                putExtra("ITEM_QUANTITY", quantity.text.toString())
+                putExtra("ITEM_PRICE", price.text.toString())
+            }
+            startActivity(buyIntent)
         }
 
         buyerUsername.text = usernameExtra

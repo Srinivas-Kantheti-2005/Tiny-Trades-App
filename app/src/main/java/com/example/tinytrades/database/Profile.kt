@@ -38,20 +38,20 @@ data class Profile(
     val mobile: Long,
 
     @ColumnInfo(name = "DNo")
-    val dno: String,
+    var dno: String,
 
     @ColumnInfo(name = "Street")
-    val street: String,
+    var street: String,
 
     @ColumnInfo(name = "Village")
-    val village: String,
+    var village: String,
 
     @ColumnInfo(name = "Pin code")
-    val pinCode: Long,
+    var pinCode: Long,
 
     @ColumnInfo(name = "Mandal")
-    val mandal: String,
+    var mandal: String,
 
     @ColumnInfo(name = "District")
-    val district: String
+    var district: String
 )

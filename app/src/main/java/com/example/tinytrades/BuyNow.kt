@@ -1,17 +1,25 @@
 package com.example.tinytrades
 
+import android.annotation.SuppressLint
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.tinytrades.database.AppDatabase
 import com.example.tinytrades.database.CartDao
 import com.example.tinytrades.database.ItemDao
 import com.example.tinytrades.database.OrderDao
 import com.example.tinytrades.database.ProfileDao
 import com.example.tinytrades.database.UserDao
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class BuyNow : AppCompatActivity() {
 
@@ -22,6 +30,7 @@ class BuyNow : AppCompatActivity() {
     private lateinit var cartDao: CartDao
     private lateinit var orderDao: OrderDao
 
+    private lateinit var backbtn: ImageButton
     private lateinit var profileImage: ImageView
     private lateinit var buyerUsername: TextView
     private lateinit var buyerName: TextView
@@ -45,6 +54,10 @@ class BuyNow : AppCompatActivity() {
     private lateinit var confirmBuy: Button
     private lateinit var update: Button
 
+    private lateinit var usernameExtra: String
+    private var itemId: Int = -1
+
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_buy_now)
@@ -56,6 +69,7 @@ class BuyNow : AppCompatActivity() {
         cartDao = database.cartDao()
         orderDao = database.orderDao()
 
+        backbtn = findViewById(R.id.backbtn)
         profileImage = findViewById(R.id.profileimage)
         buyerUsername = findViewById(R.id.username)
         buyerName = findViewById(R.id.buyerName)
@@ -78,11 +92,141 @@ class BuyNow : AppCompatActivity() {
 
         confirmBuy = findViewById(R.id.confirm_buy)
         update = findViewById(R.id.update)
+
+        usernameExtra = intent.getStringExtra("USERNAME") ?: ""
+        itemId = intent.getIntExtra("ITEM_ID", -1)
+
+        loadProfile()
+        loadAddress()
+        loadItem()
+
+        backbtn.setOnClickListener {
+            onBackPressed()
+        }
+
+        update.setOnClickListener {
+            updateAddress()
+        }
     }
 
-    private fun loadProfile() {}
+    private fun loadProfile() {
+        lifecycleScope.launch {
+            val profile = profileDao.getProfileByUsername(usernameExtra)
+            profile?.let {
+                buyerUsername.text = it.username
+                buyerName.text = "${it.firstname} ${it.lastname}"
+                gender.text = it.gender
+                mobileNo.text = it.mobile.toString()
+                emailId.text = it.emailId
 
-    private fun loadAddress() {}
+                profileImage.setImageResource(
+                    if(it.gender == "Male") R.drawable.men else R.drawable.women
+                )
+            }
+        }
+    }
 
-    private fun loadItem() {}
+    private fun loadAddress() {
+        lifecycleScope.launch {
+            val profileAddress = profileDao.getProfileByUsername(usernameExtra)
+            profileAddress?.let{
+                dNo.text = it.dno
+                street.text = it.street
+                village.text = it.village
+                pinCode.text = it.pinCode.toString()
+                mandal.text = it.mandal
+                district.text = it.district
+            }
+        }
+    }
+
+    private fun loadItem() {
+        val imageByteArray = intent.getByteArrayExtra("ITEM_IMAGE")
+        val itemTitle = intent.getStringExtra("ITEM_TITLE") ?: ""
+        val itemSize = intent.getStringExtra("ITEM_SIZE") ?: ""
+        val itemQuantity = intent.getStringExtra("ITEM_QUANTITY") ?: ""
+        val itemPrice = intent.getStringExtra("ITEM_PRICE") ?: ""
+
+        imageByteArray?.let {
+            val bitmap = BitmapFactory.decodeByteArray(it, 0, it.size)
+            cartImage.setImageBitmap(bitmap)
+        } ?: cartImage.setImageResource(android.R.color.transparent)
+        title.text = itemTitle
+        size.text = itemSize
+        quantity.setText(itemQuantity)
+        price.text = itemPrice
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+    }
+
+    private fun updateAddress() {
+        val dno = dNo.text.toString()
+        val street = street.text.toString()
+        val village = village.text.toString()
+        val pincode = pinCode.text.toString()
+        val mandal = mandal.text.toString()
+        val district = district.text.toString()
+
+        if (isValidProfileAddress(dno, street, village, pincode, mandal, district)) {
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
+                    val profileAddress = profileDao.getProfileByUsername(usernameExtra)
+                    profileAddress?.let {
+                        it.dno = dno
+                        it.street = street
+                        it.village = village
+                        it.pinCode = pincode.toLong()
+                        it.mandal = mandal
+                        it.district = district
+                        profileDao.update(it)
+                    }
+                    return@withContext profileAddress
+                }.also { updatedProfile ->
+                    withContext(Dispatchers.Main) {
+                        if (updatedProfile != null) {
+                            showToast("Address updated successfully")
+                        } else {
+                            showToast("User not found")
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun isValidProfileAddress(dno: String, street: String, village: String, pincode: String, mandal: String, district: String): Boolean {
+        return when {
+            dno.isEmpty() -> {
+                showToast("Fill the DNO field")
+                false
+            }
+            street.isEmpty() -> {
+                showToast("Fill the street field")
+                false
+            }
+            village.isEmpty() -> {
+                showToast("Fill the village field")
+                false
+            }
+            pincode.isEmpty() -> {
+                showToast("Fill the pincode field")
+                false
+            }
+            mandal.isEmpty() -> {
+                showToast("Fill the mandal field")
+                false
+            }
+            district.isEmpty() -> {
+                showToast("Fill the district field")
+                false
+            }
+            else -> true
+        }
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
 }

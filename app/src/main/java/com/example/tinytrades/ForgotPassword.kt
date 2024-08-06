@@ -60,11 +60,11 @@ class ForgotPassword : AppCompatActivity() {
         }
 
         changebtn.setOnClickListener {
-            chage()
+            change()
         }
     }
 
-    private fun chage() {
+    private fun change() {
         val userName = username.text.toString()
         val passWord = password.text.toString()
         val cpassWord = cpassword.text.toString()

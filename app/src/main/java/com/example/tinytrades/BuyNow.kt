@@ -1,7 +1,10 @@
 package com.example.tinytrades
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -10,16 +13,19 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.lifecycleScope
 import com.example.tinytrades.database.AppDatabase
 import com.example.tinytrades.database.CartDao
 import com.example.tinytrades.database.ItemDao
+import com.example.tinytrades.database.Order
 import com.example.tinytrades.database.OrderDao
 import com.example.tinytrades.database.ProfileDao
 import com.example.tinytrades.database.UserDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
 
 class BuyNow : AppCompatActivity() {
 
@@ -104,6 +110,10 @@ class BuyNow : AppCompatActivity() {
             onBackPressed()
         }
 
+        confirmBuy.setOnClickListener {
+            confirmOrder()
+        }
+
         update.setOnClickListener {
             updateAddress()
         }
@@ -159,6 +169,44 @@ class BuyNow : AppCompatActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
+    }
+
+    private fun confirmOrder() {
+        lifecycleScope.launch {
+            withContext(Dispatchers.IO) {
+                val existingOrder = orderDao.getOrderByUsername(usernameExtra)
+                if (existingOrder.isNotEmpty()) {
+                    withContext(Dispatchers.Main) {
+                        showToast("order already exist")
+                    }
+                } else {
+                    val newOrder = Order(
+                        buyerUsername = usernameExtra,
+                        Name = buyerName.text.toString(),
+                        gender = gender.text.toString(),
+                        mobileNo = mobileNo.text.toString().toLong(),
+                        emailId = emailId.text.toString(),
+                        dNo = dNo.text.toString(),
+                        street = street.text.toString(),
+                        village = village.text.toString(),
+                        pinCode = pinCode.text.toString().toLong(),
+                        mandal = mandal.text.toString(),
+                        district = district.text.toString(),
+                        itemId = itemId,
+                        image = cartImage.drawable.toBitmap().toByteArray(),
+                        title = title.text.toString(),
+                        size = size.text.toString(),
+                        quantity = quantity.text.toString().toInt(),
+                        price = price.text.toString().toDouble()
+                    )
+                    orderDao.insert(newOrder)
+                    withContext(Dispatchers.Main) {
+                        showToast("Order placed successfully")
+
+                    }
+                }
+            }
+        }
     }
 
     private fun updateAddress() {
@@ -228,5 +276,16 @@ class BuyNow : AppCompatActivity() {
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    fun Bitmap.toByteArray(): ByteArray {
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        this.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
+        return byteArrayOutputStream.toByteArray()
+    }
+
+    fun Drawable.toByteArray(): ByteArray {
+        val bitmap = (this as BitmapDrawable).bitmap
+        return bitmap.toByteArray()
     }
 }

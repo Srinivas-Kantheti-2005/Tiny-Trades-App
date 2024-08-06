@@ -9,12 +9,6 @@ import androidx.room.PrimaryKey
     tableName = "Order",
     foreignKeys = [
         ForeignKey(
-            entity = User::class,
-            parentColumns = arrayOf("username"),
-            childColumns = arrayOf("sellerUsername"),
-            onDelete = ForeignKey.CASCADE
-        ),
-        ForeignKey(
             entity = Profile::class,
             parentColumns = arrayOf("emailid"),
             childColumns = arrayOf("emailId"),
@@ -34,14 +28,11 @@ data class Order(
     @ColumnInfo(name = "orderId")
     val orderId: Int = 0,
 
-    @ColumnInfo(name = "sellerUsername")
-    val sellerUsername: String,
+    @ColumnInfo(name = "buyerUsername")
+    val buyerUsername: String,
 
-    @ColumnInfo(name = "firstName")
-    val firstName: String,
-
-    @ColumnInfo(name = "lastName")
-    val lastName: String,
+    @ColumnInfo(name = "Name")
+    val Name: String,
 
     @ColumnInfo(name = "gender")
     val gender: String,
@@ -51,9 +42,6 @@ data class Order(
 
     @ColumnInfo(name = "emailId")
     val emailId: String,
-
-    @ColumnInfo(name = "buyerUsername")
-    val buyerUsername: String,
 
     @ColumnInfo(name = "dNo")
     val dNo: String,

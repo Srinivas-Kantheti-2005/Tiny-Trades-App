@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    tools:context=".YourOrders">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:id="@+id/profileBar"
+        android:background="@color/white"
+        tools:ignore="MissingConstraints">
+
+        <ImageButton
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/backbtn"
+            android:background="@color/white"
+            android:contentDescription="@string/backbtn"
+            android:src="@drawable/baseline_arrow_back_24"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="0dp"
+            app:layout_constraintTop_toTopOf="@id/profileBar"
+            app:layout_constraintBottom_toBottomOf="@id/profileBar"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/profileText"
+            android:text="@string/profile"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginStart="55dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="0dp"
+            app:layout_constraintTop_toTopOf="@id/profileBar"
+            app:layout_constraintBottom_toBottomOf="@id/profileBar"
+            app:layout_constraintStart_toStartOf="@id/profileBar"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/buyerUsername"
+            android:text="@string/user"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginTop="0dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="0dp"
+            app:layout_constraintTop_toTopOf="@id/profileBar"
+            app:layout_constraintBottom_toBottomOf="@id/profileBar"
+            app:layout_constraintEnd_toEndOf="@id/profileBar"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:id="@+id/buyerImage"
+        android:contentDescription="@string/buyer_image"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        app:layout_constraintTop_toBottomOf="@id/profileBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/username"
+        android:hint="@string/user"
+        android:textSize="16sp"
+        android:textStyle="normal"
+        android:textColor="@color/black"
+        android:textColorHint="@color/hint"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:background="@color/dim_background"
+        android:padding="10dp"
+        app:layout_constraintTop_toBottomOf="@id/buyerImage"
+        app:layout_constraintStart_toStartOf="@id/buyerImage"
+        app:layout_constraintEnd_toEndOf="@id/buyerImage"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:id="@+id/orders"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="0dp"
+        app:layout_constraintTop_toBottomOf="@id/username"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/frameLayout"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/background"
+        android:id="@+id/frameLayout"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/linearLayout"
+            android:orientation="horizontal"
+            android:layout_marginTop="15dp"
+            android:background="@color/white">
+
+            <ImageButton
+                android:id="@+id/home"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="4dp"
+                android:src="@drawable/home_icon_black"
+                android:backgroundTint="@color/white"
+                android:contentDescription="@string/home" />
+
+            <View
+                android:layout_width="10dp"
+                android:layout_height="50dp" />
+
+            <ImageButton
+                android:id="@+id/explore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/explore_icon_black"
+                android:backgroundTint="@color/white"
+                android:contentDescription="@string/explore" />
+
+            <View
+                android:layout_width="50dp"
+                android:layout_height="50dp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:visibility="invisible" />
+
+            <View
+                android:layout_width="40dp"
+                android:layout_height="50dp" />
+
+            <ImageButton
+                android:id="@+id/inbox"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/notification_orange"
+                android:backgroundTint="@color/white"
+                android:contentDescription="@string/your_orders" />
+
+            <View
+                android:layout_width="10dp"
+                android:layout_height="50dp" />
+
+            <ImageButton
+                android:id="@+id/profile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/account_circle_black"
+                android:backgroundTint="@color/white"
+                android:contentDescription="@string/profile" />
+
+            <View
+                android:layout_width="10dp"
+                android:layout_height="50dp"/>
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/sell"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:src="@drawable/sell"
+            android:backgroundTint="@color/background"
+            android:contentDescription="@string/sell" />
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

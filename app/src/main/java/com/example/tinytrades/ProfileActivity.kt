@@ -32,6 +32,7 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var homebtn: ImageButton
     private lateinit var explorebtn: ImageButton
     private lateinit var sellbtn: ImageButton
+    private lateinit var inbox: ImageButton
     private lateinit var savebtn: Button
     private lateinit var deletebtn: Button
     private lateinit var loginbtn: Button
@@ -66,10 +67,12 @@ class ProfileActivity : AppCompatActivity() {
         homebtn = findViewById(R.id.home)
         explorebtn = findViewById(R.id.explore)
         sellbtn = findViewById(R.id.sell)
+        inbox = findViewById(R.id.inbox)
         savebtn = findViewById(R.id.save)
         deletebtn = findViewById(R.id.delete)
         loginbtn = findViewById(R.id.loginbtn)
         newaccountbtn = findViewById(R.id.newaccount)
+
         username = findViewById(R.id.username)
         firstname = findViewById(R.id.firstname)
         lastname = findViewById(R.id.lastname)
@@ -94,6 +97,12 @@ class ProfileActivity : AppCompatActivity() {
             profile?.let { populateFields(it) }
         }
 
+        backbtn.setOnClickListener {
+            onBackPressed()
+        }
+        updatebtn.setOnClickListener {
+            updateProfile()
+        }
         itemsbtn.setOnClickListener {
             val userName = username.text.toString()
             val itemsIntent = Intent(this, SellerItemPageActivity::class.java).apply {
@@ -101,15 +110,33 @@ class ProfileActivity : AppCompatActivity() {
             }
             startActivity(itemsIntent)
         }
-
         savebtn.setOnClickListener {
             saveProfile()
         }
         deletebtn.setOnClickListener {
             deleteProfile()
         }
-        updatebtn.setOnClickListener {
-            updateProfile()
+        loginbtn.setOnClickListener {
+            val loginIntent = Intent(this, LoginPage::class.java)
+            startActivity(loginIntent)
+        }
+        newaccountbtn.setOnClickListener {
+            val createAccountIntent = Intent(this, CreateAccount::class.java)
+            startActivity(createAccountIntent)
+        }
+
+        homebtn.setOnClickListener {
+            val homeIntent = Intent(this, MainActivity::class.java).apply {
+                putExtra("USERNAME", usernameExtra)
+            }
+            startActivity(homeIntent)
+        }
+        explorebtn.setOnClickListener {
+            val exploreIntent = Intent(this, MainActivity::class.java).apply {
+                putExtra("navigate_to", "explore")
+                putExtra("USERNAME", username.text.toString())
+            }
+            startActivity(exploreIntent)
         }
         sellbtn.setOnClickListener {
             val sellIntent = Intent(this, SellActivity::class.java).apply {
@@ -117,39 +144,11 @@ class ProfileActivity : AppCompatActivity() {
             }
             startActivity(sellIntent)
         }
-        backbtn.setOnClickListener {
-            onBackPressed()
-        }
-        newaccountbtn.setOnClickListener {
-            val createAccountIntent = Intent(this, CreateAccount::class.java)
-            startActivity(createAccountIntent)
-        }
-        loginbtn.setOnClickListener {
-            val loginIntent = Intent(this, LoginPage::class.java)
-            startActivity(loginIntent)
-        }
-        explorebtn.setOnClickListener {
-            val exploreIntent = Intent(this, MainActivity::class.java).apply {
-                putExtra("navigate_to", "explore")
+        inbox.setOnClickListener {
+            val inboxIntent = Intent(this, YourOrders::class.java).apply {
+                putExtra("USERNAME", username.text.toString())
             }
-            startActivity(exploreIntent)
-        }
-        homebtn.setOnClickListener {
-            val homeIntent = Intent(this, MainActivity::class.java).apply {
-                putExtra("USERNAME", usernameExtra)
-            }
-            startActivity(homeIntent)
-        }
-    }
-
-    private fun loadProfile(userName: String) {
-        lifecycleScope.launch {
-            val profile = withContext(Dispatchers.IO) {
-                profileDao.getProfileByUsername(userName)
-            }
-            if(profile != null) {
-                populateFields(profile)
-            }
+            startActivity(inboxIntent)
         }
     }
 

@@ -202,7 +202,7 @@ class BuyNow : AppCompatActivity() {
                     orderDao.insert(newOrder)
                     withContext(Dispatchers.Main) {
                         showToast("Order placed successfully")
-
+                        showToast("Order must be cash on delivery")
                     }
                 }
             }

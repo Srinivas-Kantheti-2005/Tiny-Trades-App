@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity(), HomeRecyclerViewAdapter.OnItemClickLis
     private lateinit var userName: TextView
     private lateinit var exploreBtn: ImageButton
     private lateinit var sellBtn: ImageButton
+    private lateinit var inbox: ImageButton
     private lateinit var profileBtn: ImageButton
 
     private lateinit var adapter: HomeRecyclerViewAdapter
@@ -56,6 +57,7 @@ class MainActivity : AppCompatActivity(), HomeRecyclerViewAdapter.OnItemClickLis
         userName = findViewById(R.id.username)
         exploreBtn = findViewById(R.id.explore)
         sellBtn = findViewById(R.id.sell)
+        inbox = findViewById(R.id.inbox)
         profileBtn = findViewById(R.id.profile)
 
         recyclerView.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
@@ -84,6 +86,13 @@ class MainActivity : AppCompatActivity(), HomeRecyclerViewAdapter.OnItemClickLis
                 putExtra("USERNAME", userName.text.toString())
             }
             startActivity(sellIntent)
+        }
+
+        inbox.setOnClickListener {
+            val inboxIntent = Intent(this, YourOrders::class.java).apply {
+                putExtra("USERNAME", userName.text.toString())
+            }
+            startActivity(inboxIntent)
         }
 
         profileBtn.setOnClickListener {

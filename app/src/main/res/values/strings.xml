@@ -73,4 +73,7 @@
     <string name="buyer_username">Buyer Username</string>
     <string name="item">Item</string>
     <string name="confirm_buy">CONFIRM BUY</string>
+    <string name="order_image">Order Image</string>
+    <string name="cancel">CANCEL</string>
+    <string name="remaining_order">with in 3 days your get your order</string>
 </resources>

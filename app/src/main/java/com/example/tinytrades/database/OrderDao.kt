@@ -9,7 +9,7 @@ import androidx.room.Update
 @Dao
 interface OrderDao {
     @Insert
-    suspend fun insert(order: com.example.tinytrades.database.Order)
+    suspend fun insert(order: Order)
 
     @Update
     suspend fun update(order: Order)

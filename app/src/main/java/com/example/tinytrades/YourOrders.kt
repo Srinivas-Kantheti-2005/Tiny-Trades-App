@@ -1,5 +1,6 @@
 package com.example.tinytrades
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
@@ -8,9 +9,12 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.tinytrades.database.AppDatabase
 import com.example.tinytrades.database.CartDao
 import com.example.tinytrades.database.ItemDao
+import com.example.tinytrades.database.Order
 import com.example.tinytrades.database.OrderDao
 import com.example.tinytrades.database.ProfileDao
 import com.example.tinytrades.database.UserDao
@@ -30,6 +34,10 @@ class YourOrders : AppCompatActivity() {
     private lateinit var buyerImage: ImageView
     private lateinit var username: TextView
 
+    private lateinit var orderRecyclerView: RecyclerView
+    private lateinit var orderRecyclerViewAdapter: OrderAdapter
+//    private lateinit var cancelbtn: Button
+
     private lateinit var backbtn: ImageButton
     private lateinit var home: ImageButton
     private lateinit var explore: ImageButton
@@ -38,6 +46,9 @@ class YourOrders : AppCompatActivity() {
 
     private lateinit var buyerUsername: TextView
     private lateinit var usernameExtra: String
+    private lateinit var titleExtra: String
+
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_your_orders)
@@ -56,6 +67,9 @@ class YourOrders : AppCompatActivity() {
 
         buyerImage = findViewById(R.id.buyerImage)
         username = findViewById(R.id.username)
+//        cancelbtn = findViewById(R.id.cancelbtn)
+
+        orderRecyclerView = findViewById(R.id.orderRecycleView)
 
         backbtn = findViewById(R.id.backbtn)
         home = findViewById(R.id.home)
@@ -64,6 +78,13 @@ class YourOrders : AppCompatActivity() {
         profile = findViewById(R.id.profile)
 
         loadProfile()
+
+        orderRecyclerView.layoutManager = LinearLayoutManager(this)
+        orderRecyclerViewAdapter = OrderAdapter(mutableListOf()) { order ->
+            cancelOrder(order)
+        }
+        orderRecyclerView.adapter = orderRecyclerViewAdapter
+        loadOrders()
 
         backbtn.setOnClickListener {
             onBackPressed()
@@ -95,6 +116,10 @@ class YourOrders : AppCompatActivity() {
         }
     }
 
+    private fun cancelOrder(order: Order) {
+
+    }
+
     private fun loadProfile() {
         lifecycleScope.launch {
             val profile = withContext(Dispatchers.IO) {
@@ -113,6 +138,22 @@ class YourOrders : AppCompatActivity() {
             }
         }
     }
+
+    private fun loadOrders() {
+        lifecycleScope.launch {
+            val orders = withContext(Dispatchers.IO) {
+                orderDao.getOrderByUsername(usernameExtra)
+            }
+            if(orders.isEmpty()) {
+                showToast("you have no orders")
+            }
+            else {
+                orderRecyclerViewAdapter.updateOrders(orders)
+            }
+        }
+    }
+    
+
 
     override fun onBackPressed() {
         super.onBackPressed()

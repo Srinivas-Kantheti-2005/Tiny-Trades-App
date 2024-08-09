@@ -96,7 +96,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:id="@+id/orders"
+        android:id="@+id/orderRecycleView"
         android:layout_marginTop="5dp"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"

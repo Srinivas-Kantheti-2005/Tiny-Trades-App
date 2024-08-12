@@ -19,4 +19,7 @@ interface OrderDao {
 
     @Query("select * from `Order` where buyerUsername = :username")
     suspend fun getOrderByUsername(username: String): List<Order>
+
+    @Query("select * from `order` where title = :itemTitle")
+    suspend fun getOrderByTitle( itemTitle: String): List<Order>
 }

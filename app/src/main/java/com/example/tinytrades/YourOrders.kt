@@ -3,6 +3,7 @@ package com.example.tinytrades
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -144,6 +145,7 @@ class YourOrders : AppCompatActivity() {
             val orders = withContext(Dispatchers.IO) {
                 orderDao.getOrderByUsername(usernameExtra)
             }
+            Log.d("Orders", "Number of orders fetched: ${orders.size}")
             if(orders.isEmpty()) {
                 showToast("you have no orders")
             }

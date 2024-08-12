@@ -77,36 +77,6 @@
         app:layout_constraintEnd_toEndOf="@id/profileimage"
         app:layout_constraintTop_toBottomOf="@id/profileimage"/>
 
-    <Button
-        android:layout_width="130dp"
-        android:layout_height="45dp"
-        android:id="@+id/update"
-        android:text="@string/update"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        android:backgroundTint="@color/orange"
-        android:layout_marginTop="25sp"
-        android:layout_marginEnd="30dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/Profile"/>
-
-    <Button
-        android:layout_width="130dp"
-        android:layout_height="45dp"
-        android:id="@+id/items"
-        android:text="@string/items"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        android:backgroundTint="@color/orange"
-        android:layout_marginTop="10sp"
-        android:layout_marginBottom="25dp"
-        android:layout_marginEnd="30dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/update"
-        app:layout_constraintBottom_toTopOf="@id/lastname"/>
-
     <EditText
         android:id="@+id/firstname"
         android:layout_width="180dp"
@@ -402,6 +372,36 @@
         app:layout_constraintTop_toBottomOf="@id/delete"
         app:layout_constraintStart_toStartOf="@id/district"
         app:layout_constraintEnd_toEndOf="@id/district"/>
+
+    <Button
+        android:layout_width="130dp"
+        android:layout_height="45dp"
+        android:id="@+id/update"
+        android:text="@string/update"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:backgroundTint="@color/orange"
+        android:layout_marginTop="25sp"
+        android:layout_marginEnd="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/Profile"/>
+
+    <Button
+        android:layout_width="130dp"
+        android:layout_height="45dp"
+        android:id="@+id/items"
+        android:text="@string/items"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:backgroundTint="@color/orange"
+        android:layout_marginTop="10sp"
+        android:layout_marginBottom="25dp"
+        android:layout_marginEnd="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/update"
+        app:layout_constraintBottom_toTopOf="@id/lastname"/>
 
     <FrameLayout
         android:layout_width="match_parent"

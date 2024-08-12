@@ -39,7 +39,7 @@ class OrderAdapter(
         holder.orderSize.text = item.size
         holder.orderQuantity.text = item.quantity.toString()
         holder.orderPrice.text = item.price.toString()
-        holder.cancelbtn?.setOnClickListener {
+        holder.cancelbtn.setOnClickListener {
             onCancelClick(item)
         }
         item.image?.let {

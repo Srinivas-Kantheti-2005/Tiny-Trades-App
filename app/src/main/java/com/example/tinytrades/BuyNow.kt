@@ -174,36 +174,71 @@ class BuyNow : AppCompatActivity() {
     private fun confirmOrder() {
         lifecycleScope.launch {
             withContext(Dispatchers.IO) {
-                val existingOrder = orderDao.getOrderByUsername(usernameExtra)
-                if (existingOrder.isNotEmpty()) {
-                    withContext(Dispatchers.Main) {
-                        showToast("order already exist")
+                try {
+                    val existingOrderByUsername = orderDao.getOrderByUsername(usernameExtra)
+                    if(existingOrderByUsername.isNotEmpty()) {
+                        val existingOrderByTitle = orderDao.getOrderByTitle(title.text.toString())
+                        if(existingOrderByTitle.isNotEmpty()) {
+                            withContext(Dispatchers.Main) {
+                                showToast("order already exist")
+                            }
+                        }
+                        else {
+                            val newOrder = Order(
+                                buyerUsername = usernameExtra,
+                                Name = buyerName.text.toString(),
+                                gender = gender.text.toString(),
+                                mobileNo = mobileNo.text.toString().toLong(),
+                                emailId = emailId.text.toString(),
+                                dNo = dNo.text.toString(),
+                                street = street.text.toString(),
+                                village = village.text.toString(),
+                                pinCode = pinCode.text.toString().toLong(),
+                                mandal = mandal.text.toString(),
+                                district = district.text.toString(),
+                                itemId = itemId,
+                                image = cartImage.drawable.toBitmap().toByteArray(),
+                                title = title.text.toString(),
+                                size = size.text.toString(),
+                                quantity = quantity.text.toString().toInt(),
+                                price = price.text.toString().toDouble()
+                            )
+                            orderDao.insert(newOrder)
+                            cartDao.deleteItem(itemId, usernameExtra)
+                            withContext(Dispatchers.Main) {
+                                showToast("Order placed successfully. Order must be cash on delivery")
+                            }
+                        }
                     }
-                } else {
-                    val newOrder = Order(
-                        buyerUsername = usernameExtra,
-                        Name = buyerName.text.toString(),
-                        gender = gender.text.toString(),
-                        mobileNo = mobileNo.text.toString().toLong(),
-                        emailId = emailId.text.toString(),
-                        dNo = dNo.text.toString(),
-                        street = street.text.toString(),
-                        village = village.text.toString(),
-                        pinCode = pinCode.text.toString().toLong(),
-                        mandal = mandal.text.toString(),
-                        district = district.text.toString(),
-                        itemId = itemId,
-                        image = cartImage.drawable.toBitmap().toByteArray(),
-                        title = title.text.toString(),
-                        size = size.text.toString(),
-                        quantity = quantity.text.toString().toInt(),
-                        price = price.text.toString().toDouble()
-                    )
-                    orderDao.insert(newOrder)
-                    withContext(Dispatchers.Main) {
-                        showToast("Order placed successfully")
-                        showToast("Order must be cash on delivery")
+                    else {
+                        val newOrder = Order(
+                            buyerUsername = usernameExtra,
+                            Name = buyerName.text.toString(),
+                            gender = gender.text.toString(),
+                            mobileNo = mobileNo.text.toString().toLong(),
+                            emailId = emailId.text.toString(),
+                            dNo = dNo.text.toString(),
+                            street = street.text.toString(),
+                            village = village.text.toString(),
+                            pinCode = pinCode.text.toString().toLong(),
+                            mandal = mandal.text.toString(),
+                            district = district.text.toString(),
+                            itemId = itemId,
+                            image = cartImage.drawable.toBitmap().toByteArray(),
+                            title = title.text.toString(),
+                            size = size.text.toString(),
+                            quantity = quantity.text.toString().toInt(),
+                            price = price.text.toString().toDouble()
+                        )
+                        orderDao.insert(newOrder)
+                        cartDao.deleteItem(itemId, usernameExtra)
+                        withContext(Dispatchers.Main) {
+                            showToast("Order placed successfully, Order must be cash on delivery")
+                        }
                     }
+                }
+                catch (e: Exception) {
+                    showToast("error to delete item: ${e.message}")
                 }
             }
         }

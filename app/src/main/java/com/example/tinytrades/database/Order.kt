@@ -9,6 +9,12 @@ import androidx.room.PrimaryKey
     tableName = "Order",
     foreignKeys = [
         ForeignKey(
+            entity = User::class,
+            parentColumns = arrayOf("username"),
+            childColumns = arrayOf("buyerUsername"),
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
             entity = Profile::class,
             parentColumns = arrayOf("emailid"),
             childColumns = arrayOf("emailId"),

@@ -13,7 +13,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.lifecycleScope
 import com.example.tinytrades.database.AppDatabase
 import com.example.tinytrades.database.CartDao
@@ -62,12 +61,14 @@ class BuyNow : AppCompatActivity() {
 
     private lateinit var usernameExtra: String
     private var itemId: Int = -1
+    private var cartId: Int = -1
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_buy_now)
 
+        // Initialize database and DAOs
         database = AppDatabase.getDatabase(applicationContext)
         userDao = database.userDao()
         profileDao = database.profileDao()
@@ -75,6 +76,7 @@ class BuyNow : AppCompatActivity() {
         cartDao = database.cartDao()
         orderDao = database.orderDao()
 
+        // Initialize views
         backbtn = findViewById(R.id.backbtn)
         profileImage = findViewById(R.id.profileimage)
         buyerUsername = findViewById(R.id.username)
@@ -99,13 +101,17 @@ class BuyNow : AppCompatActivity() {
         confirmBuy = findViewById(R.id.confirm_buy)
         update = findViewById(R.id.update)
 
+        // Get extras from intent
         usernameExtra = intent.getStringExtra("USERNAME") ?: ""
         itemId = intent.getIntExtra("ITEM_ID", -1)
+        cartId = intent.getIntExtra("CART_ID", -1)
 
         loadProfile()
-        loadAddress()
+        loadProfileAddress()
         loadItem()
 
+
+        // Set up listeners
         backbtn.setOnClickListener {
             onBackPressed()
         }
@@ -121,31 +127,45 @@ class BuyNow : AppCompatActivity() {
 
     private fun loadProfile() {
         lifecycleScope.launch {
-            val profile = profileDao.getProfileByUsername(usernameExtra)
-            profile?.let {
-                buyerUsername.text = it.username
-                buyerName.text = "${it.firstname} ${it.lastname}"
-                gender.text = it.gender
-                mobileNo.text = it.mobile.toString()
-                emailId.text = it.emailId
+            try {
+                val profile = profileDao.getProfileByUsername(usernameExtra)
+                if (profile != null) {
+                    buyerUsername.text = profile.username
+                    buyerName.text = "${profile.firstname} ${profile.lastname}"
+                    gender.text = profile.gender
+                    mobileNo.text = profile.mobile.toString()
+                    emailId.text = profile.emailId
 
-                profileImage.setImageResource(
-                    if(it.gender == "Male") R.drawable.men else R.drawable.women
-                )
+                    profileImage.setImageResource(
+                        if (profile.gender == "Male") R.drawable.men else R.drawable.women
+                    )
+                } else {
+                    showToast("Profile not found")
+                }
+            } catch (e: Exception) {
+                showToast("Error loading profile: ${e.message}")
             }
         }
     }
 
-    private fun loadAddress() {
+    private  fun loadProfileAddress() {
         lifecycleScope.launch {
-            val profileAddress = profileDao.getProfileByUsername(usernameExtra)
-            profileAddress?.let{
-                dNo.text = it.dno
-                street.text = it.street
-                village.text = it.village
-                pinCode.text = it.pinCode.toString()
-                mandal.text = it.mandal
-                district.text = it.district
+            try {
+                val profileAddress = profileDao.getProfileByUsername(usernameExtra)
+                if(profileAddress != null) {
+                    dNo.text = profileAddress.dno
+                    street.text = profileAddress.street
+                    village.text = profileAddress.village
+                    pinCode.text = profileAddress.pinCode.toString()
+                    mandal.text = profileAddress.mandal
+                    district.text = profileAddress.district
+                }
+                else {
+                    showToast("profile address not found")
+                }
+            }
+            catch (e: Exception) {
+                showToast("Error at loading profile: ${e.message}")
             }
         }
     }
@@ -161,14 +181,11 @@ class BuyNow : AppCompatActivity() {
             val bitmap = BitmapFactory.decodeByteArray(it, 0, it.size)
             cartImage.setImageBitmap(bitmap)
         } ?: cartImage.setImageResource(android.R.color.transparent)
+
         title.text = itemTitle
         size.text = itemSize
         quantity.setText(itemQuantity)
         price.text = itemPrice
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
     }
 
     private fun confirmOrder() {
@@ -176,69 +193,41 @@ class BuyNow : AppCompatActivity() {
             withContext(Dispatchers.IO) {
                 try {
                     val existingOrderByUsername = orderDao.getOrderByUsername(usernameExtra)
-                    if(existingOrderByUsername.isNotEmpty()) {
-                        val existingOrderByTitle = orderDao.getOrderByTitle(title.text.toString())
-                        if(existingOrderByTitle.isNotEmpty()) {
-                            withContext(Dispatchers.Main) {
-                                showToast("order already exist")
-                            }
-                        }
-                        else {
-                            val newOrder = Order(
-                                buyerUsername = usernameExtra,
-                                Name = buyerName.text.toString(),
-                                gender = gender.text.toString(),
-                                mobileNo = mobileNo.text.toString().toLong(),
-                                emailId = emailId.text.toString(),
-                                dNo = dNo.text.toString(),
-                                street = street.text.toString(),
-                                village = village.text.toString(),
-                                pinCode = pinCode.text.toString().toLong(),
-                                mandal = mandal.text.toString(),
-                                district = district.text.toString(),
-                                itemId = itemId,
-                                image = cartImage.drawable.toBitmap().toByteArray(),
-                                title = title.text.toString(),
-                                size = size.text.toString(),
-                                quantity = quantity.text.toString().toInt(),
-                                price = price.text.toString().toDouble()
-                            )
-                            orderDao.insert(newOrder)
-                            cartDao.deleteItem(itemId, usernameExtra)
-                            withContext(Dispatchers.Main) {
-                                showToast("Order placed successfully. Order must be cash on delivery")
-                            }
-                        }
-                    }
-                    else {
-                        val newOrder = Order(
-                            buyerUsername = usernameExtra,
-                            Name = buyerName.text.toString(),
-                            gender = gender.text.toString(),
-                            mobileNo = mobileNo.text.toString().toLong(),
-                            emailId = emailId.text.toString(),
-                            dNo = dNo.text.toString(),
-                            street = street.text.toString(),
-                            village = village.text.toString(),
-                            pinCode = pinCode.text.toString().toLong(),
-                            mandal = mandal.text.toString(),
-                            district = district.text.toString(),
-                            itemId = itemId,
-                            image = cartImage.drawable.toBitmap().toByteArray(),
-                            title = title.text.toString(),
-                            size = size.text.toString(),
-                            quantity = quantity.text.toString().toInt(),
-                            price = price.text.toString().toDouble()
-                        )
-                        orderDao.insert(newOrder)
-                        cartDao.deleteItem(itemId, usernameExtra)
+                    val existingOrderByTitle = orderDao.getOrderByTitle(title.text.toString())
+                    if (existingOrderByUsername.isNotEmpty() && existingOrderByTitle.isNotEmpty()) {
                         withContext(Dispatchers.Main) {
-                            showToast("Order placed successfully, Order must be cash on delivery")
+                            showToast("Order already exists")
                         }
+                        return@withContext
                     }
-                }
-                catch (e: Exception) {
-                    showToast("error to delete item: ${e.message}")
+
+                    val newOrder = Order(
+                        buyerUsername = usernameExtra,
+                        Name = buyerName.text.toString(),
+                        gender = gender.text.toString(),
+                        mobileNo = mobileNo.text.toString().toLong(),
+                        emailId = emailId.text.toString(),
+                        dNo = dNo.text.toString(),
+                        street = street.text.toString(),
+                        village = village.text.toString(),
+                        pinCode = pinCode.text.toString().toLong(),
+                        mandal = mandal.text.toString(),
+                        district = district.text.toString(),
+                        image = cartImage.drawable.toByteArray(),
+                        title = title.text.toString(),
+                        size = size.text.toString(),
+                        quantity = quantity.text.toString().toInt(),
+                        price = price.text.toString().toDouble()
+                    )
+                    orderDao.insert(newOrder)
+                    cartDao.deleteItem(itemId, usernameExtra)
+                    withContext(Dispatchers.Main) {
+                        showToast("Order placed successfully. Order must be cash on delivery")
+                    }
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main) {
+                        showToast("Error placing order: ${e.message}")
+                    }
                 }
             }
         }
@@ -266,14 +255,12 @@ class BuyNow : AppCompatActivity() {
                         profileDao.update(it)
                     }
                     return@withContext profileAddress
-                }.also { updatedProfile ->
+                }?.let {
                     withContext(Dispatchers.Main) {
-                        if (updatedProfile != null) {
-                            showToast("Address updated successfully")
-                        } else {
-                            showToast("User not found")
-                        }
+                        showToast("Address updated successfully")
                     }
+                } ?: withContext(Dispatchers.Main) {
+                    showToast("User not found")
                 }
             }
         }
@@ -313,14 +300,10 @@ class BuyNow : AppCompatActivity() {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
-    fun Bitmap.toByteArray(): ByteArray {
-        val byteArrayOutputStream = ByteArrayOutputStream()
-        this.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
-        return byteArrayOutputStream.toByteArray()
-    }
-
-    fun Drawable.toByteArray(): ByteArray {
+    private fun Drawable.toByteArray(): ByteArray {
         val bitmap = (this as BitmapDrawable).bitmap
-        return bitmap.toByteArray()
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+        return stream.toByteArray()
     }
 }

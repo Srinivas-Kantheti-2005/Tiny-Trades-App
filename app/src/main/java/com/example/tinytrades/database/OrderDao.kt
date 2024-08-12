@@ -17,7 +17,7 @@ interface OrderDao {
     @Delete
     suspend fun delete(order: Order)
 
-    @Query("select * from `Order` where buyerUsername = :username")
+    @Query("select * from `order` where buyerUsername = :username")
     suspend fun getOrderByUsername(username: String): List<Order>
 
     @Query("select * from `order` where title = :itemTitle")

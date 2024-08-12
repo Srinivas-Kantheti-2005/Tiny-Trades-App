@@ -19,12 +19,6 @@ import androidx.room.PrimaryKey
             parentColumns = arrayOf("emailid"),
             childColumns = arrayOf("emailId"),
             onDelete = ForeignKey.CASCADE
-        ),
-        ForeignKey(
-            entity = Item::class,
-            parentColumns = arrayOf("Id"),
-            childColumns = arrayOf("itemId"),
-            onDelete = ForeignKey.CASCADE
         )
     ]
 )
@@ -66,9 +60,6 @@ data class Order(
 
     @ColumnInfo(name = "district")
     val district: String,
-
-    @ColumnInfo(name = "itemId")
-    val itemId: Int,
 
     @ColumnInfo(name = "image")
     val image: ByteArray?,

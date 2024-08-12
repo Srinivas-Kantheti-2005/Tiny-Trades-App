@@ -1,6 +1,5 @@
-package com.example.tinytrades
+package com.example.tinytrades.adapters
 
-import android.content.Intent
 import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
@@ -8,19 +7,37 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.tinytrades.R
 import com.example.tinytrades.database.Item
 
-class SellerRecyclerViewAdapter(private var items: MutableList<Item>) : RecyclerView.Adapter<SellerRecyclerViewAdapter.ViewHolder>() {
+class HomeRecyclerViewAdapter(
+    private var items: MutableList<Item>,
+    private val listener: OnItemClickListener
+) : RecyclerView.Adapter<HomeRecyclerViewAdapter.ViewHolder>() {
+
+    interface OnItemClickListener {
+        fun onItemClick(item: Item)
+    }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val itemImage: ImageView = itemView.findViewById(R.id.image)
-        val itemTitle: TextView = itemView.findViewById(R.id.title)
-        val itemSize: TextView = itemView.findViewById(R.id.size)
-        val itemPrice: TextView = itemView.findViewById(R.id.price)
+        val itemImage: ImageView = itemView.findViewById(R.id.cartImage)
+        val itemTitle: TextView = itemView.findViewById(R.id.cartTitle)
+        val itemSize: TextView = itemView.findViewById(R.id.cartSize)
+        val itemPrice: TextView = itemView.findViewById(R.id.cartPrice)
+
+        init {
+            itemView.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    listener.onItemClick(items[position])
+                }
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.seller_item_layout, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_layout, parent, false)
         return ViewHolder(view)
     }
 
@@ -31,18 +48,6 @@ class SellerRecyclerViewAdapter(private var items: MutableList<Item>) : Recycler
         holder.itemPrice.text = item.price.toString()
         item.image?.let {
             holder.itemImage.setImageBitmap(BitmapFactory.decodeByteArray(it, 0, it.size))
-        }
-
-        holder.itemView.setOnClickListener {
-            val context = holder.itemView.context
-            val intent = Intent(context, ItemDetailsActivity::class.java).apply {
-                putExtra("itemImage", item.image)
-                putExtra("itemTitle", item.title)
-                putExtra("itemSize", item.size)
-                putExtra("itemPrice", item.price)
-                putExtra("sellerUsername", item.username)
-            }
-            context.startActivity(intent)
         }
     }
 

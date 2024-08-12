@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.example.tinytrades.adapters.HomeRecyclerViewAdapter
 import com.example.tinytrades.database.AppDatabase
 import com.example.tinytrades.database.Item
 import com.example.tinytrades.database.ItemDao

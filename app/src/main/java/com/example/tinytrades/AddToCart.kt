@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.tinytrades.adapters.CartAdapter
 import com.example.tinytrades.database.AppDatabase
 import com.example.tinytrades.database.Cart
 import com.example.tinytrades.database.CartDao

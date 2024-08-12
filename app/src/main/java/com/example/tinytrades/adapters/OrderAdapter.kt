@@ -1,4 +1,4 @@
-package com.example.tinytrades
+package com.example.tinytrades.adapters
 
 import android.graphics.BitmapFactory
 import android.view.LayoutInflater
@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.tinytrades.R
 import com.example.tinytrades.database.Order
 
 class OrderAdapter(

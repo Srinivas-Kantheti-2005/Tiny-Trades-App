@@ -116,7 +116,6 @@ class CartItemDetails : AppCompatActivity() {
                 showToast("Cart item updated successfully")
                 displayItemDetails(cartItem)
                 setResult(RESULT_OK)
-                finish()
             } catch (e: Exception) {
                 showToast("Error updating item: ${e.message}")
             }

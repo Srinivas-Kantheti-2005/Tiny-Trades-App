@@ -93,6 +93,7 @@ class ItemDetailsActivity : AppCompatActivity() {
                             cartDao.insert(cartItem)
                         }
                         showToast("Item added to cart")
+                        finish()
                     } else {
                         showToast("Buyer profile does not exist")
                     }

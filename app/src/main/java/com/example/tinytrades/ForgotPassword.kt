@@ -1,7 +1,6 @@
 package com.example.tinytrades
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -55,8 +54,7 @@ class ForgotPassword : AppCompatActivity() {
         changebtn = findViewById(R.id.changebtn)
 
         backbtn.setOnClickListener {
-            val backbtn = Intent(this, LoginPage::class.java)
-            startActivity(backbtn)
+            onBackPressed()
         }
 
         changebtn.setOnClickListener {
@@ -85,8 +83,7 @@ class ForgotPassword : AppCompatActivity() {
                     runOnUiThread {
                         showToastMsg("password updated successfully")
                         clearFields()
-                        val changeIntent = Intent(this@ForgotPassword, LoginPage::class.java)
-                        startActivity(changeIntent)
+                        onBackPressed()
                         finish()
                     }
                 }
@@ -163,6 +160,10 @@ class ForgotPassword : AppCompatActivity() {
     private fun hasSpecialCharacter(password: String): Boolean {
         val specialCharacters = "!@#$%^&*()-_=+[]{}|;:/,.?<>`~"
         return password.any { it in specialCharacters }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
     }
 
     private fun showToastMsg(message: String) {

@@ -119,7 +119,26 @@ class YourOrders : AppCompatActivity() {
     }
 
     private fun cancelOrder(order: Order) {
-
+        lifecycleScope.launch {
+            try {
+                val orderToDelete = withContext(Dispatchers.IO) {
+                    orderDao.getOrderByUsernameAndTitle(usernameExtra, order.title)
+                }
+                if(orderToDelete == null) {
+                    showToast("order not found")
+                }
+                else {
+                    withContext(Dispatchers.IO) {
+                        orderDao.delete(order)
+                    }
+                    showToast("order canceled successfully")
+                    loadOrders()
+                }
+            }
+            catch (e: Exception) {
+                showToast("Error at canceling order: ${e.message}")
+            }
+        }
     }
 
     private fun loadProfile() {
